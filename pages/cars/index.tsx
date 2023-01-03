@@ -2,15 +2,21 @@ import { GetServerSideProps } from 'next';
 import { Cell, Column, Row, TableView, TableBody, TableHeader, View } from '@adobe/react-spectrum';
 import { Flex } from '@adobe/react-spectrum';
 import { PageContainer } from '../components/PageContainer';
+import { useRouter } from 'next/router'
 
-interface Car {
+export interface Car {
   id: number;
   brand: string;
   model: string;
-  yearOfProduction: number;
+  productionYear: number;
   power: number;
   capacity: number;
   costPerDay: number;
+  numberOfSeats: number;
+  transmission: string;
+  photo: string;
+  usable: boolean;
+  rents: any[];
 }
 
 interface IndexCarsPageProps {
@@ -18,18 +24,25 @@ interface IndexCarsPageProps {
 }
 
 export default function Cars({ data2 }: IndexCarsPageProps) {
+  const router = useRouter();
+
+  let usableCars = data2.filter((el:Car) => el.usable === true)
+
   let columns = [
     { name: 'Brand', uid: 'brand' },
     { name: 'Model', uid: 'model' },
-    { name: 'Year of production', uid: 'yearOfProduction' },
+    { name: 'Year of production', uid: 'productionYear' },
     { name: 'Power', uid: 'power' },
     { name: 'Capacity', uid: 'capacity' },
     { name: 'Cost/day', uid: 'costPerDay' },
   ];
 
+  function selectCarHandler(keys:any){
+    router.push(`/cars/${keys.currentKey}`);
+  }
+
   return (
     <PageContainer>
-      <Flex direction="column" justifyContent="center" alignItems="center">
         <h1>Available cars:</h1>
         <TableView
           aria-label="Table with car available for rent"
@@ -38,6 +51,7 @@ export default function Cars({ data2 }: IndexCarsPageProps) {
           selectionStyle="highlight"
           alignSelf="center"
           width="70%"
+          onSelectionChange={(keys)=>selectCarHandler(keys)}
         >
           <TableHeader columns={columns}>
             {column => (
@@ -46,11 +60,10 @@ export default function Cars({ data2 }: IndexCarsPageProps) {
               </Column>
             )}
           </TableHeader>
-          <TableBody items={data2}>
+          <TableBody items={usableCars}>
             {(item: any) => <Row>{columnKey => <Cell>{item[columnKey]}</Cell>}</Row>}
           </TableBody>
         </TableView>
-      </Flex>
     </PageContainer>
   );
 }
