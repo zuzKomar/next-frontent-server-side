@@ -1,8 +1,8 @@
-import { GetServerSideProps } from 'next';
-import { Cell, Column, Row, TableView, TableBody, TableHeader, View } from '@adobe/react-spectrum';
-import { Flex } from '@adobe/react-spectrum';
+import { GetServerSideProps, GetServerSidePropsContext } from 'next';
+import { Cell, Column, Row, TableView, TableBody, TableHeader } from '@adobe/react-spectrum';
 import { PageContainer } from '../components/PageContainer';
 import { useRouter } from 'next/router'
+import { getSession } from "next-auth/react";
 
 export interface Car {
   id: number;
@@ -20,13 +20,13 @@ export interface Car {
 }
 
 interface IndexCarsPageProps {
-  data2: Car[];
+  cars: Car[];
 }
 
-export default function Cars({ data2 }: IndexCarsPageProps) {
+export default function Cars({ cars }: IndexCarsPageProps) {
   const router = useRouter();
 
-  let usableCars = data2.filter((el:Car) => el.usable === true)
+  let usableCars = cars.filter((el:Car) => el.usable === true)
 
   let columns = [
     { name: 'Brand', uid: 'brand' },
@@ -68,9 +68,43 @@ export default function Cars({ data2 }: IndexCarsPageProps) {
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async () => {
-  const res = await fetch('http://localhost:3000/cars');
-  const data2 = await res.json();
+export const getServerSideProps: GetServerSideProps = async (context: GetServerSidePropsContext) => {
+  const token = context.req.cookies.token;
+  const session = await getSession( {req: context.req} );
+  console.log(session); //null if user is not authenticated
+  console.log(token);
 
-  return { props: { data2 } };
-};
+  if(!session) {
+    return {
+      redirect: {
+        destination: '/auth/signin',
+        permanent: false
+      }
+    }
+  }else {
+    console.log('session active')
+    const cars = await getCars(token!);
+  
+    return { 
+      props: { 
+        cars: cars, 
+        session 
+      } 
+    };
+  }
+}
+
+
+export async function getCars(token: string) {
+  const response = await fetch('http://localhost:3000/cars', 
+  {
+    mode: 'cors',
+    credentials: 'include',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + token
+    }
+  });
+  const data = await response.json();
+  return data;
+}

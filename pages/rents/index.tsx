@@ -4,6 +4,7 @@ import { GetServerSideProps } from 'next';
 import { days } from '../cars/components/rentModal';
 import { Car } from '../cars';
 import { useRouter } from 'next/router'
+import { getSession } from "next-auth/react";
 
 export type Rent = {
   id: number;
@@ -44,10 +45,10 @@ export default function Rents({rents}: RentsPageProps) {
     ));
 
   function handleDamageReport( carId: number){
-
     let updateCarDto = {
       usable: false
     }
+    
     fetch(`http://localhost:3000/cars/${carId}`, {
       method: 'PATCH',
       body: JSON.stringify(updateCarDto),
@@ -64,7 +65,7 @@ export default function Rents({rents}: RentsPageProps) {
     <PageContainer>
       <h1>Your rents</h1>
       <TableView
-          aria-label="Table with previous rents"
+          aria-label="Table with your rents"
           flex
           selectionMode="single"
           selectionStyle="highlight"
@@ -89,9 +90,20 @@ export default function Rents({rents}: RentsPageProps) {
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async () => {
-  const res = await fetch('http://localhost:3000/users/1');
-  const data2 = await res.json();
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const session = await getSession( context );
 
-  return { props: { rents : data2.rents } };
+    if(!session) {
+    return {
+      redirect: {
+        destination: '/auth/signin',
+        permanent: false
+      }
+    }
+  }else {
+      const res = await fetch(`http://localhost:3000/users/1`);
+      const data2 = await res.json();
+
+      return { props: { rents : data2.rents } };
+  }
 };

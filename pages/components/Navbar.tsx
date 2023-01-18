@@ -1,48 +1,52 @@
-import { Flex, Item, TabList, TabPanels, Tabs } from '@adobe/react-spectrum';
+import { Flex, Item, TabList, Tabs } from '@adobe/react-spectrum';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import {useRouter} from 'next/router';
+import { useSession, signOut } from "next-auth/react"
 
 export const Navbar = () => {
-  const [currentLocation, setCurrentLocation] = useState('');
+  const router = useRouter();
+  let currentPath = router.pathname.split('/')[1];
+  const { data: session, status: loading } = useSession()
 
-  useEffect(() => {
-    if (window !== undefined) {
-      if (window.location.pathname == '') {
-        setCurrentLocation('home');
-      } else if (window.location.pathname == '/cars') {
-        setCurrentLocation('cars');
-      } else if (window.location.pathname == '/rents') {
-        setCurrentLocation('rents');
-      }
-    }
-  }, []);
+  function logoutHandler(){
+    signOut();
+  }
 
   return (
-    <Flex justifyContent="center">
-      <Tabs
-        aria-label="navigation"
-        density="compact"
-        onSelectionChange={e => console.log(e)}
-        selectedKey={currentLocation}
-      >
-        <TabList>
-          <Item key="home">
-            <Link href="/">
-              <a>Home</a>
-            </Link>
-          </Item>
-          <Item key="cars">
-            <Link href="/cars">
-              <a>Cars</a>
-            </Link>
-          </Item>
-          <Item key="rents">
-            <Link href="/rents">
-              <a>Rents</a>
-            </Link>
-          </Item>
-        </TabList>
-      </Tabs>
+    <Flex direction='row' justifyContent='space-around'>
+      <Flex justifyContent="center" direction='column'> 
+        {session &&
+          <h2>{`Logged as ${session?.user?.name}`}</h2>
+        }
+        <Flex direction='row' justifyContent='space-around'>
+          <Tabs
+            aria-label="navigation"
+            density="compact"
+            selectedKey={currentPath}
+          >
+            <TabList>
+              <Item key="">
+                <Link href="/">
+                  <a>Home</a>
+                </Link>
+              </Item>
+              <Item key="cars">
+                <Link href="/cars">
+                  <a>Cars</a>
+                </Link>
+              </Item>
+              <Item key="rents">
+                <Link href="/rents">
+                  <a>Rents</a>
+                </Link>
+              </Item>
+            </TabList>
+          </Tabs>
+          {session && 
+            <button onClick={logoutHandler}>Sign out</button>
+          }
+        </Flex>
+      </Flex>
     </Flex>
   );
 };

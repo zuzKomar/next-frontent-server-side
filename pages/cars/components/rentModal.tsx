@@ -18,8 +18,9 @@ export const days = (date_1: Date, date_2: Date) => {
 
 
 const RentModal = ({carId, costPerDay, closeHandler, confirmHandler}: RentModalProps) => {
+    let currentDate = new Date();
     const [date, setDate] = useState<string | any>(parseDate(new Date().toISOString().split('T')[0]));
-    const [dueDate, setDueDate] = useState<string | any>(parseDate(new Date().toISOString().split('T')[0]));
+    const [dueDate, setDueDate] = useState<string | any>(parseDate(new Date(Date.now() + (3600 * 1000 * 24)).toISOString().split('T')[0]));
 
     let costOfRent = costPerDay * days(new Date(dueDate), new Date(date));
 
@@ -32,7 +33,7 @@ const RentModal = ({carId, costPerDay, closeHandler, confirmHandler}: RentModalP
             onCancel={() => closeHandler(false)}
             onPrimaryAction={() => confirmHandler(carId, 1, date, dueDate)}
         >
-            Select a suitable dates for rent period. Note that the minimal rent time is one full day (24h).
+            Select suitable dates for rental period. Note that the minimal rent time is one full day (24h).
             <Flex direction="row" gap="size-200">
                 <DatePicker label="Date from:" value={date} onChange={setDate}/>
                 <DatePicker label="Date to:" value={dueDate} onChange={setDueDate}/>

@@ -6,7 +6,7 @@ import {Button} from '@adobe/react-spectrum'
 import Car from '@spectrum-icons/workflow/Car'
 import {Text} from '@adobe/react-spectrum';
 import RentModal from "./rentModal";
-import {DialogTrigger, Dialog} from '@adobe/react-spectrum'
+import {DialogTrigger} from '@adobe/react-spectrum'
 
 
 const SelectedCarInfo = ({data}: CarPageProps) => {
@@ -22,7 +22,6 @@ const SelectedCarInfo = ({data}: CarPageProps) => {
             date: date.year + '-' + (date.month.toString().length === 1 ? '0': '')+ date.month  + '-' + (date.day.toString().length === 1 ? '0' : '') + date.day + 'T08:00:00.000Z',
             dueDate: dueDate.year + '-' + (dueDate.month.toString().length === 1 ? '0': '')+ dueDate.month + '-' + (dueDate.day.toString().length === 1 ? '0' : '') + dueDate.day + 'T08:00:00.000Z',
         }
-        console.log(createRentDto)
 
         fetch('http://localhost:3000/rents', {
             method: 'POST',
@@ -91,7 +90,6 @@ const SelectedCarInfo = ({data}: CarPageProps) => {
                         </Button>
                         <RentModal carId={data.id} costPerDay={data.costPerDay} closeHandler={setOpen} confirmHandler={handleCarRental} />
                     </DialogTrigger>
-                    
                 </Flex>
             </Flex>
         </View>

@@ -49,4 +49,13 @@ const withTM = require('next-transpile-modules')([
   '@spectrum-icons/workflow',
 ]);
 
-module.exports = withTM({});
+module.exports = withTM({
+  async rewrites() {
+    return [
+      {
+        source: '/api/:path*',
+        destination: 'http://localhost:3000/:path*' // Proxy to Backend
+      }
+    ]
+  }
+});
