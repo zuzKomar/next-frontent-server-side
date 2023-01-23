@@ -1,6 +1,6 @@
 import { PageContainer } from '../components/PageContainer';
 import { Cell, Column, Row, TableView, TableBody, TableHeader, Button } from '@adobe/react-spectrum';
-import { GetServerSideProps } from 'next';
+import { GetServerSidePropsContext } from 'next';
 import { days } from '../cars/components/rentModal';
 import { Car } from '../cars';
 import { useRouter } from 'next/router'
@@ -32,7 +32,7 @@ export default function Rents({rents}: RentsPageProps) {
     { name: 'Options', uid: 'reportDamage'}
   ];
 
-  let modifiedRents = rents.map((rent) =>  (
+  let modifiedRents = rents.length > 0 ? rents.map((rent) =>  (
     {
       ...rent,
       date: new Date(rent.date).toISOString().slice(0,10),
@@ -42,14 +42,14 @@ export default function Rents({rents}: RentsPageProps) {
       cost: days(new Date(rent.dueDate), new Date(rent.date)) * rent.car.costPerDay,
       reportDamage: 'yes'
     }
-    ));
+    )): [];
 
   function handleDamageReport( carId: number){
     let updateCarDto = {
       usable: false
     }
     
-    fetch(`http://localhost:3000/cars/${carId}`, {
+    fetch(`${process.env.NEST_URL}cars/${carId}`, {
       method: 'PATCH',
       body: JSON.stringify(updateCarDto),
       mode: 'cors',
@@ -90,9 +90,9 @@ export default function Rents({rents}: RentsPageProps) {
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const session = await getSession( context );
-
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  try {
+    const session = await getSession( {req: context.req} );
     if(!session) {
     return {
       redirect: {
@@ -101,9 +101,25 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       }
     }
   }else {
-      const res = await fetch(`http://localhost:3000/users/1`);
-      const data2 = await res.json();
+      const token = session!.user!.accessToken || '';
+      const rents = await getUserRents(token, session.user.id)
 
-      return { props: { rents : data2.rents } };
+      return { props: { rents : rents} };
+  }
+  }catch(err){
+    console.log(err);
   }
 };
+
+export async function getUserRents(token: string, userId: string) {
+  const response = await fetch(`${process.env.NEST_URL}users/${userId}`, 
+  {
+    mode: 'cors',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + token
+    }
+  });
+  const data = await response.json();
+  return data;
+}
