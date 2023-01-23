@@ -64,22 +64,6 @@ export default function Signup() {
             role: 'USER'
         }
 
-        // const result = await signIn('credentials', {
-        //     redirect: false,
-        //     user: createUserDto
-        // });
-
-        // if(!result?.error){
-        //     router.replace('/')
-        // }else {
-        //     try {
-        //         const result = await createUser(createUserDto);
-        //         console.log(result);
-        //     } catch (e){
-        //         console.log(e)
-        //     }
-        // }
-
         //in the end send post request add user role to dto
         fetch('http://localhost:3000/auth/signup', {
             method: 'POST',

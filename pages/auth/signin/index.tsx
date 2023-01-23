@@ -5,9 +5,7 @@ import { useRouter } from "next/router";
 import * as yup from "yup";
 import { yupResolver } from '@hookform/resolvers/yup';
 import styles from '../../../styles/signup.module.scss'
-import { signIn, getCsrfToken, getSession } from "next-auth/react"
-import { unstable_getServerSession } from "next-auth";
-import Nextauth from "../../api/auth/[...nextauth]";
+import { getCsrfToken, getSession, signIn } from "next-auth/react"
 
 type ILoginFormInputs = {
     email: string
@@ -19,19 +17,19 @@ const schema = yup.object({
     password: yup.string().min(8).max(50).required()
 })
 
-export default function Signin({ csrfToken }) {
+export default function Signin() {
     const router = useRouter();
     const { register, handleSubmit, formState: { errors } } = useForm<ILoginFormInputs>({
         resolver: yupResolver(schema)
     })
 
-    const onSubmit: SubmitHandler<ILoginFormInputs> = async data => {
-        console.log('submit execution');
+    const onSubmit: SubmitHandler<ILoginFormInputs> = async (data , e) => {
+        e.preventDefault();
         const res = await signIn('credentials', {
             redirect: false,
             email: data.email,
             password: data.password,
-            callbackUrl: window.location.origin
+            callbackUrl: '/'
         });
 
         if(res.error){
@@ -42,9 +40,9 @@ export default function Signin({ csrfToken }) {
         }
     }
 
-function redirectToSignupPage(){
-    router.push(`/auth/signup`)
-}
+    function redirectToSignupPage(){
+        router.push(`/auth/signup`)
+    }
 
     return (
         <PageContainer>
@@ -52,11 +50,7 @@ function redirectToSignupPage(){
             <View backgroundColor="gray-100" width="70%" height="100%">
                 <div className={styles.signup__form}>
                     <Form maxWidth="size-4600" isRequired necessityIndicator="label" onSubmit={handleSubmit(onSubmit)}>
-                    <input
-                  name="csrfToken"
-                  type="hidden"
-                  defaultValue={csrfToken}
-                />
+
                         <div className={styles.signup__form__input}>
                             <div className={styles.signup__form__input__data}>
                                 <label htmlFor='email'>Email*</label>
@@ -72,7 +66,7 @@ function redirectToSignupPage(){
                             </div>
                             <p className={styles.signup__form__input__error}>{errors.password?.message}</p>
                         </div>
-                        <Button variant='primary' type="button" onPress={onSubmit({email: 'zuza1@wp.pl', password: 'test1234'})} UNSAFE_className={styles.signup__form__submitbtn}>Login</Button>
+                        <Button variant='primary' type="submit" UNSAFE_className={styles.signup__form__submitbtn}>Login</Button>
                     </Form>
                     <div className={styles.signup__login}>
                         <h3>Not a member?<span className={styles.signup__login__link} onClick={redirectToSignupPage}> Signup now!</span></h3>
@@ -83,13 +77,12 @@ function redirectToSignupPage(){
     )
 }
 
-export async function getServerSideProps(context) {
-    // const session = await getSession()
-    // console.log(session)
-    let csrfToken = await getCsrfToken(context);
-    //console.log(context.req)
-    //console.log('getServerSideProps...')
-    //console.log(csrfToken);
-    //let csrfToken = 'await getCsrfToken(context);'
-    return { props: { csrfToken:  csrfToken || null } };
-  }
+// export async function getServerSideProps({req, res}) {
+//     const session = await getSession()
+//     console.log(session)
+//     //console.log(context.req)
+//     //console.log('getServerSideProps...')
+//     //console.log(csrfToken);
+//     //let csrfToken = 'await getCsrfToken(context);'
+//     return { props: { csrfToken:  csrfToken || null } };
+//   }
