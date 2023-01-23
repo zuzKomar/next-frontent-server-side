@@ -1,22 +1,17 @@
 import { Flex, Item, TabList, Tabs } from '@adobe/react-spectrum';
 import Link from 'next/link';
 import {useRouter} from 'next/router';
-import { useSession, signOut } from "next-auth/react"
+import { signOut, useSession,  } from "next-auth/react"
 
 export const Navbar = () => {
   const router = useRouter();
   let currentPath = router.pathname.split('/')[1];
-  const { data: session, status: loading } = useSession()
-
-  function logoutHandler(){
-    signOut();
-  }
-
+  const { data: session } = useSession(); 
   return (
     <Flex direction='row' justifyContent='space-around'>
       <Flex justifyContent="center" direction='column'> 
         {session &&
-          <h2>{`Logged as ${session?.user?.name}`}</h2>
+          <h2>{`Logged as ${session?.user.name}`}</h2>
         }
         <Flex direction='row' justifyContent='space-around'>
           <Tabs
@@ -27,23 +22,25 @@ export const Navbar = () => {
             <TabList>
               <Item key="">
                 <Link href="/">
-                  <a>Home</a>
+                    Home
                 </Link>
               </Item>
               <Item key="cars">
                 <Link href="/cars">
-                  <a>Cars</a>
+                    Cars
                 </Link>
               </Item>
               <Item key="rents">
                 <Link href="/rents">
-                  <a>Rents</a>
+                    Rents
                 </Link>
               </Item>
             </TabList>
           </Tabs>
-          {session && 
-            <button onClick={logoutHandler}>Sign out</button>
+          {session ?
+            <button onClick={() => signOut({ callbackUrl: 'http://localhost:3001/auth/signin' })}>Sign out</button>
+            : 
+            <button onClick={()=> {router.push('/auth/signin')}}>Sign in</button>
           }
         </Flex>
       </Flex>

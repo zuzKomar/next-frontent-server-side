@@ -17,7 +17,7 @@ export const Header = () => {
             flexDirection: 'column',
           }}
         >
-          <Image src={logo} alt="rent a car logo" width="240px" height="120px" />
+          <Image src={logo} alt="rent a car logo" style={{width: '240px', height: '120px'}}/>
           <Navbar />
         </div>
       </View>
