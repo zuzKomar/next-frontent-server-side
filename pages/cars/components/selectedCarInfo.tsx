@@ -7,11 +7,15 @@ import Car from '@spectrum-icons/workflow/Car'
 import {Text} from '@adobe/react-spectrum';
 import RentModal from "./rentModal";
 import {DialogTrigger} from '@adobe/react-spectrum'
+import { useSession } from "next-auth/react";
 
 
 const SelectedCarInfo = ({data}: CarPageProps) => {
     const [open, setOpen] = useState(false);
     let photoPath = `../static/${data.photo}.png`
+
+    const session = useSession();
+    const userId = session.data.user.id;
 
     function handleCarRental(carId: number, userId: number, date: any, dueDate: any){
         //check if this car is available this time
@@ -88,7 +92,7 @@ const SelectedCarInfo = ({data}: CarPageProps) => {
                             <Car />
                             <Text>Rent me!</Text>
                         </Button>
-                        <RentModal carId={data.id} costPerDay={data.costPerDay} closeHandler={setOpen} confirmHandler={handleCarRental} />
+                        <RentModal carId={data.id} userId={userId} costPerDay={data.costPerDay} closeHandler={setOpen} confirmHandler={handleCarRental} />
                     </DialogTrigger>
                 </Flex>
             </Flex>
