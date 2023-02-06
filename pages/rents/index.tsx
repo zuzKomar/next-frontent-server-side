@@ -2,19 +2,9 @@ import { PageContainer } from '../components/PageContainer';
 import { Cell, Column, Row, TableView, TableBody, TableHeader, Button } from '@adobe/react-spectrum';
 import { GetServerSidePropsContext } from 'next';
 import { days } from '../cars/components/rentModal';
-import { Car } from '../cars';
 import { useRouter } from 'next/router'
-import { getSession } from "next-auth/react";
-
-export type Rent = {
-  id: number;
-  userId: number;
-  carId: number;
-  date: Date;
-  dueDate: Date;
-  damagedCar: boolean;
-  car: Car;
-}
+import { getSession, useSession } from "next-auth/react";
+import { Rent } from '../types/Rent';
 
 type RentsPageProps = {
   rents: Rent[]
@@ -22,39 +12,43 @@ type RentsPageProps = {
 
 export default function Rents({rents}: RentsPageProps) {
   const router = useRouter();
+  const session = useSession();
+  const token = session.data?.user!.accessToken || '';
 
   let columns = [
     { name: 'Car', uid: 'car'},
     { name: 'Date from', uid: 'date' },
     { name: 'Date to', uid: 'dueDate' },
     { name: 'Cost', uid: 'cost' },
-    { name: 'Damage', uid: 'damagedCar' },
+    { name: 'Damaged', uid: 'damagedCar' },
     { name: 'Options', uid: 'reportDamage'}
   ];
 
   let modifiedRents = rents.length > 0 ? rents.map((rent) =>  (
     {
       ...rent,
+      car: rent.car.brand + ' ' + rent.car.model,
       date: new Date(rent.date).toISOString().slice(0,10),
       dueDate: new Date(rent.dueDate).toISOString().slice(0,10),
-      car: rent.car.brand + rent.car.model,
-      damagedCar : rent.car.usable ? 'No' : 'Yes',
       cost: days(new Date(rent.dueDate), new Date(rent.date)) * rent.car.costPerDay,
+      damagedCar: rent.damagedCar === false ? 'No' : 'Yes',
       reportDamage: 'yes'
     }
     )): [];
 
-  function handleDamageReport( carId: number){
-    let updateCarDto = {
-      usable: false
+
+  function handleDamageReport( rentId: number){
+    let updateRentDto = {
+      damagedCar: true
     }
     
-    fetch(`${process.env.NEST_URL}cars/${carId}`, {
+    fetch(`http://localhost:3000/rents/${rentId}`, {
       method: 'PATCH',
-      body: JSON.stringify(updateCarDto),
+      body: JSON.stringify(updateRentDto),
       mode: 'cors',
       headers: {
         'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
       }
     })
     .then(() => router.push(`/rents`))
@@ -70,7 +64,7 @@ export default function Rents({rents}: RentsPageProps) {
           selectionMode="single"
           selectionStyle="highlight"
           alignSelf="center"
-          width="60%"
+          width="100%"
         >
           <TableHeader columns={columns}>
             {column => (
@@ -81,7 +75,7 @@ export default function Rents({rents}: RentsPageProps) {
           </TableHeader>
           <TableBody items={modifiedRents}>
             {(item: any) => 
-            <Row>{columnKey => <Cell>{ columnKey !== 'reportDamage' ? item[columnKey] : <Button variant='primary' isDisabled={item.damagedCar === 'No' ? false : true} onPress={() => handleDamageReport(item.carId)}>Report damage</Button>}</Cell>}
+            <Row>{columnKey => <Cell>{ columnKey !== 'reportDamage' ? item[columnKey] : <Button variant='primary' isDisabled={item.damagedCar === 'No' ? false : true} onPress={() => handleDamageReport(item.id)}>Report damage</Button>}</Cell>}
             </Row>
             }
           </TableBody>
@@ -102,8 +96,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     }
   }else {
       const token = session!.user!.accessToken || '';
-      const rents = await getUserRents(token, session.user.id)
-
+      const rents = await getUserRents(token, session.user.email)
       return { props: { rents : rents} };
   }
   }catch(err){
@@ -111,8 +104,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   }
 };
 
-export async function getUserRents(token: string, userId: string) {
-  const response = await fetch(`${process.env.NEST_URL}users/${userId}`, 
+export async function getUserRents(token: string, email: string) {
+  const response = await fetch(`${process.env.NEST_URL}users/${email}`, 
   {
     mode: 'cors',
     headers: {
@@ -121,5 +114,5 @@ export async function getUserRents(token: string, userId: string) {
     }
   });
   const data = await response.json();
-  return data;
+  return data.rents;
 }
