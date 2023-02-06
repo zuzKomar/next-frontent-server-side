@@ -2,26 +2,11 @@ import { GetServerSidePropsContext } from 'next';
 import { Cell, Column, Row, TableView, TableBody, TableHeader, View, Button, Flex } from '@adobe/react-spectrum';
 import { PageContainer } from '../components/PageContainer';
 import { useRouter } from 'next/router'
-import { getSession } from "next-auth/react";
+import { getSession, useSession } from "next-auth/react";
 import { Session } from 'next-auth';
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import TableFilters from './components/tableFilters';
-// import "next-auth"
-
-export interface Car {
-  id: number;
-  brand: string;
-  model: string;
-  productionYear: number;
-  power: number;
-  capacity: number;
-  costPerDay: number;
-  numberOfSeats: number;
-  transmission: string;
-  photo: string;
-  usable: boolean;
-  rents: any[];
-}
+import { Car } from '../types/Car';
 
 interface IndexCarsPageProps {
   cars: Car[];
@@ -37,6 +22,10 @@ export default function Cars({ cars }: IndexCarsPageProps) {
   const [powerHorses, setPowerHorses] = useState({start: 80, end: 800})
   const [capacity, setCapacity] = useState({start: 0, end: 10})
   const [costPerDay, setCostPerDay] = useState({start: 50, end: 1000})
+  const [seats, setSeats] = useState({start: 2, end: 7});
+  // const [changedUrl, setChangedUrl] = useState('');
+  const [carsData, setCarsData] = useState(cars);
+  const { data } = useSession();
 
   let columns = [
     { name: 'Brand', uid: 'brand' },
@@ -47,11 +36,41 @@ export default function Cars({ cars }: IndexCarsPageProps) {
     { name: 'Cost/day', uid: 'costPerDay' },
   ];
 
-  useEffect(() => {
-    
+  function fetchFilteredData(){
+    router.push({
+      pathname: '/cars',
+      query: {
+        brand : brand.length > 0 ? brand : [],
+        model : model.length > 0 ? model: [],
+        transmission: transmission.length > 0 ? transmission : [],
+        productionYearFrom : productionYears.start > 1970 ? productionYears.start: [],
+        productionYearTo: productionYears.end < 2023 ? productionYears.end: [],
+        powerFrom: powerHorses.start > 80 ? powerHorses.start: [],
+        powerTo : powerHorses.end < 800 ? powerHorses.end: [],
+        capacityFrom : capacity.start > 0 ? capacity.start: [],
+        capacityTo: capacity.end < 10 ? capacity.end: [],
+        costPerDayFrom: costPerDay.start > 50 ? costPerDay.start : [],
+        costPerDayTo: costPerDay.end < 1000 ? costPerDay.end : [],
+        numberOfSeatsFrom: seats.start > 2 ? seats.start : [],
+        numberOfSeatsTo: seats.end < 7 ? seats.end : []
+      }
+    });
+    const url = new URL(window.location.href);
+    let pathname = url.pathname.slice(1) + url.search;
+    window.history.pushState({}, '', url.toString());
+    let token = data.user ? data.user.accessToken : '';
 
-
-  }, [brand, model, transmission, productionYears, powerHorses, capacity, costPerDay])
+    fetch(`http://localhost:3000/${pathname}`, {
+      mode: 'cors',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+      }
+    }).then((res) => {
+      return res.json();
+    }).then((data) => {
+      setCarsData(data)});
+  }
 
   function selectCarHandler(keys:any){
     router.push(`/cars/${keys.currentKey}`);
@@ -61,10 +80,10 @@ export default function Cars({ cars }: IndexCarsPageProps) {
     <PageContainer>
         <h1>Available cars:</h1>
         <Flex direction='row' marginBottom="5px">
-            <Button variant='primary' onPress={()=> setShowTableFilters(!showTableFilters)}>{showTableFilters === false ? 'Show filters' : 'Hide filters'}</Button>
+            <Button variant='primary' UNSAFE_style={{cursor: 'pointer'}} onPress={()=> setShowTableFilters(!showTableFilters)}>{showTableFilters === false ? 'Show filters' : 'Hide filters'}</Button>
         </Flex>
         {showTableFilters &&
-          <View>
+          <View UNSAFE_style={{'backgroundColor': 'rgba(0,0,0,0.5)'}}>
             <TableFilters 
                 transmissionValue={transmission} 
                 setTransmissionValue={setTransmission}
@@ -80,6 +99,9 @@ export default function Cars({ cars }: IndexCarsPageProps) {
                 setCapacityValue={setCapacity}
                 costPerDayValue={costPerDay}
                 setCostPerDayValue={setCostPerDay}
+                seatsValue={seats}
+                setSeatsValue={setSeats}
+                useFiltersHanlder={fetchFilteredData}
                 />
           </View>
         }
@@ -89,7 +111,7 @@ export default function Cars({ cars }: IndexCarsPageProps) {
           selectionMode="single"
           selectionStyle="highlight"
           alignSelf="center"
-          width="60%"
+          width="100%"
           onSelectionChange={(keys)=>selectCarHandler(keys)}
         >
           <TableHeader columns={columns}>
@@ -99,7 +121,7 @@ export default function Cars({ cars }: IndexCarsPageProps) {
               </Column>
             )}
           </TableHeader>
-          <TableBody items={cars}>
+          <TableBody items={carsData}>
             {(item: any) => <Row>{columnKey => <Cell>{item[columnKey]}</Cell>}</Row>}
           </TableBody>
         </TableView>
@@ -110,7 +132,7 @@ export default function Cars({ cars }: IndexCarsPageProps) {
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   try {
     const session: Session | null = await getSession({req: context.req});
-    console.log('session', session);
+   
     if(!session) {
       return {
         redirect: {
@@ -118,11 +140,11 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
           permanent: false
         }
       }
-    }else {
+    }else { 
       const token = session!.user!.accessToken || '';
       const cars = await getCars(token!);
 
-      return { 
+    return { 
         props: { 
           cars: cars
         } 
@@ -143,5 +165,6 @@ export async function getCars(token: string) {
     }
   });
   const data = await response.json();
+
   return data;
 }

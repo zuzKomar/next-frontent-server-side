@@ -1,4 +1,4 @@
-import { ComboBox, Flex, Item, RangeSlider, TextField } from "@adobe/react-spectrum";
+import { Button, ComboBox, Flex, Item, RangeSlider, TextField } from "@adobe/react-spectrum";
 import React from "react";
 
 type TableFiltersType = {
@@ -16,6 +16,9 @@ type TableFiltersType = {
     setCapacityValue: ({start, end}) => void;
     costPerDayValue: {start: number, end: number};
     setCostPerDayValue: ({start, end}) => void;
+    seatsValue: {start: number, end: number};
+    setSeatsValue: ({start, end}) => void;
+    useFiltersHanlder: () => void;
 }
 
 const TableFilters = ({transmissionValue, 
@@ -31,7 +34,10 @@ const TableFilters = ({transmissionValue,
                         capacityValue,
                         setCapacityValue,
                         costPerDayValue, 
-                        setCostPerDayValue
+                        setCostPerDayValue,
+                        seatsValue,
+                        setSeatsValue,
+                        useFiltersHanlder
                         }: TableFiltersType) =>{
 
     const transmissionOptions = [
@@ -39,12 +45,6 @@ const TableFilters = ({transmissionValue,
         {id: 1, name: 'MANUAL'},
         {id: 2, name: 'AUTOMATIC'},
     ]
-
-    const seatsOptions = [
-        {id: 1, name: 2},
-        {id: 2, name: 5},
-        {id: 3, name: 7} 
-    ];
      
     return (
         <Flex direction='column'>
@@ -60,9 +60,8 @@ const TableFilters = ({transmissionValue,
                     onChange={setModelValue} />
 
                 <ComboBox
-                    label="Transmission type"
+                    label="Transmission type:"
                     defaultItems={transmissionOptions}
-                    defaultSelectedKey={0}
                     inputValue={transmissionValue}
                     onInputChange={setTransmissionValue}
                 >
@@ -80,7 +79,7 @@ const TableFilters = ({transmissionValue,
                 />
 
                 <RangeSlider
-                    label="Power horses: "
+                    label="Horsepower:"
                     minValue={80}
                     maxValue={800}
                     value={powerHorsesValue}
@@ -98,15 +97,14 @@ const TableFilters = ({transmissionValue,
                 />
             </Flex>
             <Flex direction='row' gap="size-150" wrap marginBottom="5px">
-                <ComboBox
-                        label="Number of seats:"
-                        defaultItems={seatsOptions}
-                        defaultSelectedKey={1}
-                        inputValue={''}
-                        onInputChange={setTransmissionValue}
-                    >
-                        {item => <Item>{item.name}</Item>}
-                </ComboBox>
+                <RangeSlider
+                    label="Number of seats:"
+                    minValue={2}
+                    maxValue={7}
+                    value={seatsValue}
+                    onChange={setSeatsValue}
+                    formatOptions={{style: 'decimal'}}
+                />
                 <RangeSlider
                     label="Cost/day:"
                     minValue={50}
@@ -115,6 +113,10 @@ const TableFilters = ({transmissionValue,
                     onChange={setCostPerDayValue}
                     formatOptions={{style: 'decimal'}}
                 />
+                 <Button type='button' 
+                        variant="primary" 
+                        UNSAFE_style={{cursor: 'pointer'}}
+                        onPress={()=>useFiltersHanlder()}>Apply filters</Button>
             </Flex>
         </Flex>
     )
