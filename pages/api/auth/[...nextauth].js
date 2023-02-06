@@ -2,7 +2,7 @@ import NextAuth from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 
 async function refreshAccessToken(tokenObject) {
-  console.log('param', tokenObject)
+  //console.log('param', tokenObject)
   try {
     console.log(process.env.NEST_URL)
       // Get a new set of tokens with a refreshToken
@@ -15,7 +15,7 @@ async function refreshAccessToken(tokenObject) {
       });
 
       const result = await tokenResponse.json();
-      console.log('token responseResult', result);
+      //console.log('token responseResult', result);
 
       return {
           ...tokenObject,
@@ -64,10 +64,10 @@ export default NextAuth({
         }
         // If no error and we have user data, return it        
         if (res.ok && user) {
-          console.log('1. odpowiedz z logowania', user);
+          //console.log('1. odpowiedz z logowania', user);
           const tokenPayload = JSON.parse(atob(user.token.split('.')[1]));
           const isExpited = Date.now() > tokenPayload.exp * 1000;
-          console.log(new Date(tokenPayload.exp * 1000))
+          //console.log(new Date(tokenPayload.exp * 1000))
           return user;
         }
         // Return null if user data could not be retrieved        
@@ -83,10 +83,10 @@ export default NextAuth({
   callbacks: {
     async jwt({ token, user, account }) {
       //user is defined during login ONLY
-      console.log('jwt callback: ')
-      console.log('token', token);
-      console.log('user', user);
-      console.log('account', account)
+      // console.log('jwt callback: ')
+      // console.log('token', token);
+      // console.log('user', user);
+      // console.log('account', account)
 
       if(account && user){
         token.userId = user.id;
@@ -99,20 +99,20 @@ export default NextAuth({
       //const shouldRefreshTime = Math.round((token.accessTokenExpiry - 900000) - Date.now());
       //const shouldRefreshTime = Date.now()-60000 >= (token.accessTokenExpiry * 1000)
       const tokenPayload = JSON.parse(atob(token.accessToken.split('.')[1]));
-      console.log('data w jwt callbacku', new Date(tokenPayload.exp * 1000));
+      //console.log('data w jwt callbacku', new Date(tokenPayload.exp * 1000));
       const shouldRefreshToken =  Date.now() > tokenPayload.exp * 1000;
       if(shouldRefreshToken){
-        console.log('call po nowy accessToken');
+        //console.log('call po nowy accessToken');
         token = await refreshAccessToken(token);
-        console.log('refreshAccessToken execution result: ', token);
+        //console.log('refreshAccessToken execution result: ', token);
         return token;
       }else {
-        console.log('accessToken aktualny');
+        //console.log('accessToken aktualny');
         return Promise.resolve(token);
       }
     },
     async session({ session, token, user }) {
-      console.log('token in session callback', token);
+      //console.log('token in session callback', token);
       session.user.accessToken = token.accessToken;
       session.user.refreshToken = token.refreshToken;
       session.error = token.error;
@@ -121,7 +121,7 @@ export default NextAuth({
       
       const tokenPayload = JSON.parse(atob(token.accessToken.split('.')[1]));
       session.expires = new Date(tokenPayload.exp * 1000);
-      console.log('session after eventual improvements', session);
+      //console.log('session after eventual improvements', session);
       return session;
     }
   },

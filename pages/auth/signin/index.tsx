@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 import * as yup from "yup";
 import { yupResolver } from '@hookform/resolvers/yup';
 import styles from '../../../styles/signup.module.scss'
-import { getCsrfToken, getSession, signIn } from "next-auth/react"
+import { signIn } from "next-auth/react"
 
 type ILoginFormInputs = {
     email: string
@@ -47,7 +47,7 @@ export default function Signin() {
     return (
         <PageContainer>
             <h1>Login</h1>
-            <View backgroundColor="gray-100" width="70%" height="100%">
+            <View width="70%" height="100%" UNSAFE_style={{'backgroundColor': 'rgba(0,0,0,0.5)'}}>
                 <div className={styles.signup__form}>
                     <Form maxWidth="size-4600" isRequired necessityIndicator="label" onSubmit={handleSubmit(onSubmit)}>
 
@@ -76,13 +76,3 @@ export default function Signin() {
         </PageContainer>
     )
 }
-
-// export async function getServerSideProps({req, res}) {
-//     const session = await getSession()
-//     console.log(session)
-//     //console.log(context.req)
-//     //console.log('getServerSideProps...')
-//     //console.log(csrfToken);
-//     //let csrfToken = 'await getCsrfToken(context);'
-//     return { props: { csrfToken:  csrfToken || null } };
-//   }

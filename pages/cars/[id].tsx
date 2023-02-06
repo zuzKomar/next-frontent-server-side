@@ -10,7 +10,6 @@ export interface CarPageProps {
 }
 
 export default function CarPage({data}: CarPageProps){
-
     return(
         <PageContainer>
             <SelectedCarInfo data={data} />
