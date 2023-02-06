@@ -9,6 +9,7 @@ type RentModalProps = {
  costPerDay: number;
  closeHandler: (open: boolean) => void
  confirmHandler: (carId: number, userId: number, date: string, dueDate: string) => void;
+ checkAvailabilityHandler: (carId: number, date: string, dueDate: string) => void;
 }
 
 export const days = (date_1: Date, date_2: Date) => {
@@ -18,10 +19,10 @@ export const days = (date_1: Date, date_2: Date) => {
 }
 
 
-const RentModal = ({carId, userId, costPerDay, closeHandler, confirmHandler}: RentModalProps) => {
-    let currentDate = new Date();
+const RentModal = ({carId, userId, costPerDay, closeHandler, confirmHandler, checkAvailabilityHandler}: RentModalProps) => {
     const [date, setDate] = useState<string | any>(parseDate(new Date().toISOString().split('T')[0]));
     const [dueDate, setDueDate] = useState<string | any>(parseDate(new Date(Date.now() + (3600 * 1000 * 24)).toISOString().split('T')[0]));
+    const [disableRent, setDisableRent] = useState(false)
 
     let costOfRent = costPerDay * days(new Date(dueDate), new Date(date));
 
@@ -29,10 +30,12 @@ const RentModal = ({carId, userId, costPerDay, closeHandler, confirmHandler}: Re
         <AlertDialog 
             title="Pick rent time"
             primaryActionLabel="Rent"
+            secondaryActionLabel="Check availability"
             cancelLabel="Cancel"
             variant="confirmation"
             onCancel={() => closeHandler(false)}
             onPrimaryAction={() => confirmHandler(carId, userId, date, dueDate)}
+            onSecondaryAction={()=>checkAvailabilityHandler(carId, date, dueDate)}
         >
             Select suitable dates for rental period. Note that the minimal rent time is one full day (24h).
             <Flex direction="row" gap="size-200">

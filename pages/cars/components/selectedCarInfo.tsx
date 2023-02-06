@@ -16,6 +16,8 @@ const SelectedCarInfo = ({data}: CarPageProps) => {
 
     const session = useSession();
     const userId = session.data.user.id;
+    const token = session.data.user.accessToken;
+    const nextCarRents = data.rents; //filtr all rents that are gonna be in the future, pass it to modal
 
     function handleCarRental(carId: number, userId: number, date: any, dueDate: any){
         //check if this car is available this time
@@ -33,6 +35,7 @@ const SelectedCarInfo = ({data}: CarPageProps) => {
             mode: 'cors',
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token
               },
         })
         .then((res) => res.json())
@@ -40,8 +43,27 @@ const SelectedCarInfo = ({data}: CarPageProps) => {
         .catch((e) => console.log(e))
     }
 
+    function handleCarAvailabilityCheck(carId: number, date: any, dueDate: any){
+        console.log('checkAvailable');
+        const dateFrom = '' + date.year + '-' + (date.month.toString().length === 1 ? ('0'+date.month) : date.month) + '-' + (date.day.toString().length === 1 ? ('0' + date.day) : date.day) + 'T00:00:00.000Z';
+        const dateTo = '' + dueDate.year + '-' + (dueDate.month.toString().length === 1 ? ('0'+dueDate.month) : dueDate.month) + '-' + (dueDate.day.toString().length === 1 ? ('0' + dueDate.day) : dueDate.day) + 'T00:00:00.000Z';
+
+        //check if there are any rents in selected dates
+        let isBooked = false;
+
+        for(let rent of data.rents){
+            if((new Date(dateFrom) >= new Date(rent.date) && new Date(dateFrom) <= new Date(rent.dueDate)) || (new Date(dateTo) >= new Date(rent.date) && new Date(dateTo) <= new Date(rent.dueDate))){
+                console.log('konflikt dat');
+                isBooked = true;
+            }else {
+                console.log('brak konfliktu');
+            }
+        }
+        return isBooked;
+    }
+
     return (
-        <View backgroundColor="gray-100" width="70%">
+        <View UNSAFE_style={{'backgroundColor': 'rgba(0,0,0,0.5)'}} width="70%">
             <Flex direction="row" justifyContent="space-evenly" >
                 <Flex direction="column" gap="size-150" wrap>
                     <TextField
@@ -92,7 +114,14 @@ const SelectedCarInfo = ({data}: CarPageProps) => {
                             <Car />
                             <Text>Rent me!</Text>
                         </Button>
-                        <RentModal carId={data.id} userId={userId} costPerDay={data.costPerDay} closeHandler={setOpen} confirmHandler={handleCarRental} />
+                        <RentModal 
+                            carId={data.id} 
+                            userId={userId} 
+                            costPerDay={data.costPerDay} 
+                            closeHandler={setOpen} 
+                            confirmHandler={handleCarRental} 
+                            checkAvailabilityHandler={handleCarAvailabilityCheck}
+                            />
                     </DialogTrigger>
                 </Flex>
             </Flex>
