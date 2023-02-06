@@ -8,12 +8,11 @@ export const Navbar = () => {
   let currentPath = router.pathname.split('/')[1];
   const { data: session } = useSession(); 
   return (
-    <Flex direction='row' justifyContent='space-around'>
-      <Flex justifyContent="center" direction='column'> 
+      <Flex justifyContent="center" direction='column' > 
         {session &&
           <h2>{`Logged as ${session?.user.name}`}</h2>
         }
-        <Flex direction='row' justifyContent='space-around'>
+        <Flex direction='row' justifyContent='center'>
           <Tabs
             aria-label="navigation"
             density="compact"
@@ -35,15 +34,21 @@ export const Navbar = () => {
                     Rents
                 </Link>
               </Item>
+              <Item key="user">
+                <Link href="/user">
+                    User
+                </Link>
+              </Item>
             </TabList>
           </Tabs>
-          {session ?
-            <button onClick={() => signOut({ callbackUrl: 'http://localhost:3001/auth/signin' })}>Sign out</button>
-            : 
-            <button onClick={()=> {router.push('/auth/signin')}}>Sign in</button>
-          }
+          <>
+            {session ?
+              <button onClick={() => signOut({ callbackUrl: 'http://localhost:3001/auth/signin' })}>Sign out</button>
+              : 
+              <button onClick={()=> {router.push('/auth/signin')}}>Sign in</button>
+            }
+          </>
         </Flex>
       </Flex>
-    </Flex>
   );
 };
