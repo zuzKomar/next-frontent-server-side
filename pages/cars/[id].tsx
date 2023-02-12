@@ -1,9 +1,10 @@
 import { PageContainer } from '../components/PageContainer';
 import { GetServerSidePropsContext } from 'next';
-import { Car } from '.';
 import SelectedCarInfo from './components/selectedCarInfo';
 import { getSession } from 'next-auth/react';
 import { Session } from 'next-auth';
+import IndexPage from '../Head';
+import { Car } from '../types/Car';
 
 export interface CarPageProps {
     data: Car
@@ -12,6 +13,7 @@ export interface CarPageProps {
 export default function CarPage({data}: CarPageProps){
     return(
         <PageContainer>
+          <IndexPage />
             <SelectedCarInfo data={data} />
         </PageContainer>
     )

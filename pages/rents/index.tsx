@@ -5,6 +5,7 @@ import { days } from '../cars/components/rentModal';
 import { useRouter } from 'next/router'
 import { getSession, useSession } from "next-auth/react";
 import { Rent } from '../types/Rent';
+import IndexPage from '../Head';
 
 type RentsPageProps = {
   rents: Rent[]
@@ -57,6 +58,7 @@ export default function Rents({rents}: RentsPageProps) {
 
   return (
     <PageContainer>
+      <IndexPage />
       <h1>Your rents</h1>
       <TableView
           aria-label="Table with your rents"

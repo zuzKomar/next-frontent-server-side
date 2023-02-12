@@ -6,6 +6,7 @@ import * as yup from "yup";
 import { yupResolver } from '@hookform/resolvers/yup';
 import styles from '../../../styles/signup.module.scss'
 import { signIn } from "next-auth/react"
+import IndexPage from "../../Head";
 
 type ILoginFormInputs = {
     email: string
@@ -46,6 +47,7 @@ export default function Signin() {
 
     return (
         <PageContainer>
+            <IndexPage />
             <h1>Login</h1>
             <View width="70%" height="100%" UNSAFE_style={{'backgroundColor': 'rgba(0,0,0,0.5)'}}>
                 <div className={styles.signup__form}>

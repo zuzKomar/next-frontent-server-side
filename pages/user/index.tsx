@@ -10,6 +10,7 @@ import { IFormInputs } from "../types/UserForm";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useRouter } from "next/router";
+import IndexPage from "../Head";
 
 interface UserPageProps {
     userData: User;
@@ -87,6 +88,7 @@ export default function UserPage({userData}: UserPageProps) {
 
     return(
         <PageContainer>
+            <IndexPage />
             <h1>{editMode ?  'Edit User Profile' : 'User Profile'}</h1>
             <View UNSAFE_style={{'backgroundColor': 'rgba(0,0,0,0.5)'}} width="70%" height="100%">
                 <div className={styles.signup__form}>

@@ -7,6 +7,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import styles from '../../../styles/signup.module.scss'
 import { signIn } from 'next-auth/react';
 import { IFormInputs } from '../../types/UserForm';
+import IndexPage from '../../Head';
 
 const schema = yup.object({
     firstName: yup.string().required().min(2).max(30),
@@ -82,6 +83,7 @@ export default function Signup() {
 
     return(
         <PageContainer>
+            <IndexPage />
             <h1>Wanna join? Create new account!</h1>
             <View UNSAFE_style={{'backgroundColor': 'rgba(0,0,0,0.5)'}} width="70%" height="100%">
                 <div className={styles.signup__form}>
