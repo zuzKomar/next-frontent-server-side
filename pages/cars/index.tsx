@@ -1,5 +1,5 @@
 import { GetServerSidePropsContext } from 'next';
-import { Cell, Column, Row, TableView, TableBody, TableHeader, View, Button, Flex } from '@adobe/react-spectrum';
+import { View, Button, Flex, TableView, TableHeader, Column, TableBody, Row, Cell } from '@adobe/react-spectrum';
 import { PageContainer } from '../components/PageContainer';
 import { useRouter } from 'next/router'
 import { getSession, useSession } from "next-auth/react";
@@ -7,6 +7,7 @@ import { Session } from 'next-auth';
 import { useState } from 'react'
 import TableFilters from './components/tableFilters';
 import { Car } from '../types/Car';
+import IndexPage from '../Head';
 
 interface IndexCarsPageProps {
   cars: Car[];
@@ -19,12 +20,11 @@ export default function Cars({ cars }: IndexCarsPageProps) {
   const [model, setModel] = useState('');
   const [transmission, setTransmission] = useState('');
   const [productionYears, setProductionYears] = useState({start: 1970, end: 2023})
-  const [powerHorses, setPowerHorses] = useState({start: 80, end: 800})
+  const [horsePower, setHorsePower] = useState({start: 80, end: 800})
   const [capacity, setCapacity] = useState({start: 0, end: 10})
   const [costPerDay, setCostPerDay] = useState({start: 50, end: 1000})
   const [seats, setSeats] = useState({start: 2, end: 7});
-  // const [changedUrl, setChangedUrl] = useState('');
-  const [carsData, setCarsData] = useState(cars);
+  const [carData, setCarData] = useState<Car[]>([...cars]);
   const { data } = useSession();
 
   let columns = [
@@ -36,40 +36,71 @@ export default function Cars({ cars }: IndexCarsPageProps) {
     { name: 'Cost/day', uid: 'costPerDay' },
   ];
 
-  function fetchFilteredData(){
-    router.push({
-      pathname: '/cars',
-      query: {
-        brand : brand.length > 0 ? brand : [],
-        model : model.length > 0 ? model: [],
-        transmission: transmission.length > 0 ? transmission : [],
-        productionYearFrom : productionYears.start > 1970 ? productionYears.start: [],
-        productionYearTo: productionYears.end < 2023 ? productionYears.end: [],
-        powerFrom: powerHorses.start > 80 ? powerHorses.start: [],
-        powerTo : powerHorses.end < 800 ? powerHorses.end: [],
-        capacityFrom : capacity.start > 0 ? capacity.start: [],
-        capacityTo: capacity.end < 10 ? capacity.end: [],
-        costPerDayFrom: costPerDay.start > 50 ? costPerDay.start : [],
-        costPerDayTo: costPerDay.end < 1000 ? costPerDay.end : [],
-        numberOfSeatsFrom: seats.start > 2 ? seats.start : [],
-        numberOfSeatsTo: seats.end < 7 ? seats.end : []
-      }
-    });
-    const url = new URL(window.location.href);
-    let pathname = url.pathname.slice(1) + url.search;
-    window.history.pushState({}, '', url.toString());
-    let token = data.user ? data.user.accessToken : '';
+  async function fetchFilteredData(){
+    let newUrl = '';
 
-    fetch(`http://localhost:3000/${pathname}`, {
-      mode: 'cors',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token
-      }
-    }).then((res) => {
-      return res.json();
-    }).then((data) => {
-      setCarsData(data)});
+    if (brand.length > 0){
+      newUrl += 'brand=' + brand;
+    }
+    if (model.length > 0){
+      newUrl += 'model=' + model;
+    }
+    if (transmission.length > 0){
+      newUrl += 'transmission=' + transmission;
+    } 
+    if (productionYears.start > 1970){
+      newUrl += 'productionYearFrom=' + productionYears.start;
+    }
+    if (productionYears.end < 2023){
+      newUrl += 'productionYearTo=' + productionYears.end;
+    }
+    if (horsePower.start > 80){
+      newUrl += 'powerFrom=' + horsePower.start;
+    }
+    if (horsePower.end < 800){
+      newUrl += 'powerTo=' + horsePower.end;
+    }
+    if (capacity.start > 0){
+      newUrl += 'capacityFrom=' + capacity.start;
+    }
+    if (capacity.end < 10){
+      newUrl += 'capacityTo=' + capacity.end;
+    }
+    if (costPerDay.start > 50){
+      newUrl += 'costPerDayFrom=' + costPerDay.start;
+    }
+    if (costPerDay.end < 1000){
+      newUrl += 'costPerDayTo=' + costPerDay.end;
+    }
+    if (seats.start > 2){
+      newUrl += 'numberOfSeatsFrom=' + seats.start;
+    }
+    if (seats.end < 7){
+      newUrl += 'numberOfSeatsTo=' + seats.end;
+    }
+
+    const url = new URL(window.location.href);
+    let pathname = url.pathname.slice(1) + '?' + newUrl;
+
+    if(pathname.length > 5){
+      let token = data.user ? data.user.accessToken : '';
+
+     await fetch(`http://localhost:3000/${pathname}`, {
+        mode: 'cors',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + token
+        }
+      }).then((res) => {
+        return res.json();
+      }).then((data) => {
+        setCarData(data);
+        window.history.pushState({}, '', url.toString());
+      })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
   }
 
   function selectCarHandler(keys:any){
@@ -78,9 +109,10 @@ export default function Cars({ cars }: IndexCarsPageProps) {
 
   return (
     <PageContainer>
+      <IndexPage />
         <h1>Available cars:</h1>
         <Flex direction='row' marginBottom="5px">
-            <Button variant='primary' UNSAFE_style={{cursor: 'pointer'}} onPress={()=> setShowTableFilters(!showTableFilters)}>{showTableFilters === false ? 'Show filters' : 'Hide filters'}</Button>
+            <Button variant='primary' UNSAFE_style={{cursor: 'pointer'}} onPress={(e)=> setShowTableFilters(!showTableFilters)}>{showTableFilters === false ? 'Show filters' : 'Hide filters'}</Button>
         </Flex>
         {showTableFilters &&
           <View UNSAFE_style={{'backgroundColor': 'rgba(0,0,0,0.5)'}}>
@@ -93,8 +125,8 @@ export default function Cars({ cars }: IndexCarsPageProps) {
                 setModelValue={setModel}
                 productionYearsValue={productionYears}
                 setProductionYearsValue={setProductionYears}
-                powerHorsesValue={powerHorses}
-                setPowerHorsesValue={setPowerHorses}
+                powerHorsesValue={horsePower}
+                setPowerHorsesValue={setHorsePower}
                 capacityValue={capacity}
                 setCapacityValue={setCapacity}
                 costPerDayValue={costPerDay}
@@ -121,7 +153,7 @@ export default function Cars({ cars }: IndexCarsPageProps) {
               </Column>
             )}
           </TableHeader>
-          <TableBody items={carsData}>
+          <TableBody items={carData}>
             {(item: any) => <Row>{columnKey => <Cell>{item[columnKey]}</Cell>}</Row>}
           </TableBody>
         </TableView>

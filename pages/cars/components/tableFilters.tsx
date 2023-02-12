@@ -116,7 +116,7 @@ const TableFilters = ({transmissionValue,
                  <Button type='button' 
                         variant="primary" 
                         UNSAFE_style={{cursor: 'pointer'}}
-                        onPress={()=>useFiltersHanlder()}>Apply filters</Button>
+                        onPress={useFiltersHanlder}>Apply filters</Button>
             </Flex>
         </Flex>
     )
