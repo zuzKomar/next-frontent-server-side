@@ -37,50 +37,50 @@ export default function Cars({ cars }: IndexCarsPageProps) {
   ];
 
   async function fetchFilteredData(){
-    let newUrl = '';
+    let newUrl = '?';
 
     if (brand.length > 0){
-      newUrl += 'brand=' + brand;
+      newUrl += 'brand=' + brand + '&';
     }
     if (model.length > 0){
-      newUrl += 'model=' + model;
+      newUrl += 'model=' + model + '&';;
     }
     if (transmission.length > 0){
-      newUrl += 'transmission=' + transmission;
+      newUrl += 'transmission=' + transmission + '&';;
     } 
     if (productionYears.start > 1970){
-      newUrl += 'productionYearFrom=' + productionYears.start;
+      newUrl += 'productionYearFrom=' + productionYears.start + '&';;
     }
     if (productionYears.end < 2023){
-      newUrl += 'productionYearTo=' + productionYears.end;
+      newUrl += 'productionYearTo=' + productionYears.end + '&';;
     }
     if (horsePower.start > 80){
-      newUrl += 'powerFrom=' + horsePower.start;
+      newUrl += 'powerFrom=' + horsePower.start + '&';;
     }
     if (horsePower.end < 800){
-      newUrl += 'powerTo=' + horsePower.end;
+      newUrl += 'powerTo=' + horsePower.end + '&';;
     }
     if (capacity.start > 0){
-      newUrl += 'capacityFrom=' + capacity.start;
+      newUrl += 'capacityFrom=' + capacity.start + '&';;
     }
     if (capacity.end < 10){
-      newUrl += 'capacityTo=' + capacity.end;
+      newUrl += 'capacityTo=' + capacity.end + '&';;
     }
     if (costPerDay.start > 50){
-      newUrl += 'costPerDayFrom=' + costPerDay.start;
+      newUrl += 'costPerDayFrom=' + costPerDay.start + '&';;
     }
     if (costPerDay.end < 1000){
-      newUrl += 'costPerDayTo=' + costPerDay.end;
+      newUrl += 'costPerDayTo=' + costPerDay.end + '&';;
     }
     if (seats.start > 2){
-      newUrl += 'numberOfSeatsFrom=' + seats.start;
+      newUrl += 'numberOfSeatsFrom=' + seats.start + '&';;
     }
     if (seats.end < 7){
-      newUrl += 'numberOfSeatsTo=' + seats.end;
+      newUrl += 'numberOfSeatsTo=' + seats.end + '&';;
     }
 
     const url = new URL(window.location.href);
-    let pathname = url.pathname.slice(1) + '?' + newUrl;
+    let pathname = url.pathname.slice(1) + newUrl.slice(0, -1);
 
     if(pathname.length > 5){
       let token = data.user ? data.user.accessToken : '';
@@ -94,7 +94,13 @@ export default function Cars({ cars }: IndexCarsPageProps) {
       }).then((res) => {
         return res.json();
       }).then((data) => {
-        setCarData(data);
+        console.log(data);
+        if(data.length > 0){
+          setCarData(data);
+        }else {
+          setCarData([]);
+        }
+       
         window.history.pushState({}, '', url.toString());
       })
         .catch((err) => {
