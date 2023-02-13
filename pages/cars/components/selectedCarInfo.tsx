@@ -44,15 +44,16 @@ const SelectedCarInfo = ({data}: CarPageProps) => {
     }
 
     function handleCarAvailabilityCheck(carId: number, date: any, dueDate: any){
-        console.log('checkAvailable');
-        const dateFrom = '' + date.year + '-' + (date.month.toString().length === 1 ? ('0'+date.month) : date.month) + '-' + (date.day.toString().length === 1 ? ('0' + date.day) : date.day) + 'T00:00:00.000Z';
-        const dateTo = '' + dueDate.year + '-' + (dueDate.month.toString().length === 1 ? ('0'+dueDate.month) : dueDate.month) + '-' + (dueDate.day.toString().length === 1 ? ('0' + dueDate.day) : dueDate.day) + 'T00:00:00.000Z';
-
+        setOpen(true);
+        const dateFrom = '' + date.year + '-' + (date.month.toString().length === 1 ? ('0'+date.month) : date.month) + '-' + (date.day.toString().length === 1 ? ('0' + date.day) : date.day) + 'T08:00:00.000Z';
+        const dateTo = '' + dueDate.year + '-' + (dueDate.month.toString().length === 1 ? ('0'+dueDate.month) : dueDate.month) + '-' + (dueDate.day.toString().length === 1 ? ('0' + dueDate.day) : dueDate.day) + 'T08:00:00.000Z';
         //check if there are any rents in selected dates
         let isBooked = false;
 
         for(let rent of data.rents){
-            if((new Date(dateFrom) >= new Date(rent.date) && new Date(dateFrom) <= new Date(rent.dueDate)) || (new Date(dateTo) >= new Date(rent.date) && new Date(dateTo) <= new Date(rent.dueDate))){
+            if((new Date(dateFrom) >= new Date(rent.date) && new Date(dateFrom) <= new Date(rent.dueDate)) 
+                || (new Date(dateTo) >= new Date(rent.date) && new Date(dateTo) <= new Date(rent.dueDate)) 
+                || ((new Date(dateFrom) <= new Date(rent.date) && (new Date(dateTo) >= new Date(rent.date) )))){
                 console.log('konflikt dat');
                 isBooked = true;
             }else {

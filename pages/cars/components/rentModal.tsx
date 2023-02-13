@@ -1,5 +1,5 @@
-import { useState } from "react";
-import {AlertDialog, Flex} from '@adobe/react-spectrum'
+import { useState, useEffect } from "react";
+import {AlertDialog, Button, Flex} from '@adobe/react-spectrum'
 import {DatePicker} from '@adobe/react-spectrum'
 import {parseDate} from '@internationalized/date';
 
@@ -9,7 +9,7 @@ type RentModalProps = {
  costPerDay: number;
  closeHandler: (open: boolean) => void
  confirmHandler: (carId: number, userId: number, date: string, dueDate: string) => void;
- checkAvailabilityHandler: (carId: number, date: string, dueDate: string) => void;
+ checkAvailabilityHandler: (carId: number, date: string, dueDate: string) => boolean;
 }
 
 export const days = (date_1: Date, date_2: Date) => {
@@ -18,11 +18,16 @@ export const days = (date_1: Date, date_2: Date) => {
     return TotalDays;
 }
 
-
 const RentModal = ({carId, userId, costPerDay, closeHandler, confirmHandler, checkAvailabilityHandler}: RentModalProps) => {
     const [date, setDate] = useState<string | any>(parseDate(new Date().toISOString().split('T')[0]));
     const [dueDate, setDueDate] = useState<string | any>(parseDate(new Date(Date.now() + (3600 * 1000 * 24)).toISOString().split('T')[0]));
-    const [disableRent, setDisableRent] = useState(false)
+    const [disableRent, setDisableRent] = useState(true)
+    const [carAvailable, setCarAvailable] = useState(true);
+
+    useEffect(() => {
+        setDisableRent(true);
+        setCarAvailable(true);
+    }, [date, dueDate])
 
     let costOfRent = costPerDay * days(new Date(dueDate), new Date(date));
 
@@ -30,24 +35,35 @@ const RentModal = ({carId, userId, costPerDay, closeHandler, confirmHandler, che
         <AlertDialog 
             title="Pick rent time"
             primaryActionLabel="Rent"
-            secondaryActionLabel="Check availability"
             cancelLabel="Cancel"
             variant="confirmation"
+            isPrimaryActionDisabled={disableRent}
             onCancel={() => closeHandler(false)}
             onPrimaryAction={() => confirmHandler(carId, userId, date, dueDate)}
-            onSecondaryAction={()=>checkAvailabilityHandler(carId, date, dueDate)}
         >
-            Select suitable dates for rental period. Note that the minimal rent time is one full day (24h).
+            Select suitable dates for rental period. Then check car availability. Note that the minimal rent time is one full day (24h). Rent starts at 8 am and ends at 8 am next day.
             <Flex direction="row" gap="size-200">
                 <DatePicker label="Date from:" value={date} onChange={setDate}/>
                 <DatePicker label="Date to:" value={dueDate} onChange={setDueDate}/>
             </Flex>
-            { costOfRent > 0 &&
-                <Flex direction='row' gap="size-100">
-                    <p>Cost of rent:</p>
-                    <p>{costOfRent + ' $'}</p>
+            <Flex direction='column'>
+                <Flex direction='row' justifyContent='space-around'>
+                { costOfRent > 0 &&
+                    <Flex direction='row' gap="size-100">
+                        <p>Cost of rent:</p>
+                        <p>{costOfRent + ' $'}</p>
+                    </Flex>
+                }
+                    <Button variant="accent" marginTop="10px" onPress={()=>{setDisableRent(checkAvailabilityHandler(carId, date, dueDate))
+                                                                            setCarAvailable(!checkAvailabilityHandler(carId, date, dueDate))
+                    }}>Check availability</Button>
                 </Flex>
-            }
+                {!carAvailable &&
+                    <p>Sorry, this car is not available in this time, please choose another slot.</p>
+                }
+            </Flex>
+
+           
         </AlertDialog>
     )
 }
