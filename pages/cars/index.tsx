@@ -1,5 +1,5 @@
 import { GetServerSidePropsContext } from 'next';
-import { View, Button, Flex, TableView, TableHeader, Column, TableBody, Row, Cell } from '@adobe/react-spectrum';
+import { View, Button, Flex, TableView, TableHeader, Column, TableBody, Row, Cell, Header } from '@adobe/react-spectrum';
 import { PageContainer } from '../components/PageContainer';
 import { useRouter } from 'next/router'
 import { getSession, useSession } from "next-auth/react";
@@ -24,7 +24,8 @@ export default function Cars({ cars }: IndexCarsPageProps) {
   const [capacity, setCapacity] = useState({start: 0, end: 10})
   const [costPerDay, setCostPerDay] = useState({start: 50, end: 1000})
   const [seats, setSeats] = useState({start: 2, end: 7});
-  const [carData, setCarData] = useState<Car[]>([...cars]);
+  const [carData, setCarData] = useState<any[]>([...cars]);
+  const [noCars, setNoCars] = useState<boolean>(cars.length === 0);
   const { data } = useSession();
 
   let columns = [
@@ -92,13 +93,14 @@ export default function Cars({ cars }: IndexCarsPageProps) {
           'Authorization': 'Bearer ' + token
         }
       }).then((res) => {
+        console.log(res.json());
         return res.json();
       }).then((data) => {
-        console.log(data);
         if(data.length > 0){
           setCarData(data);
+          setNoCars(false);
         }else {
-          setCarData([]);
+          setNoCars(true);
         }
        
         window.history.pushState({}, '', url.toString());
@@ -107,6 +109,33 @@ export default function Cars({ cars }: IndexCarsPageProps) {
           console.log(err);
         });
     }
+  }
+
+  async function clearFiltersHandler() {
+    const url = new URL(window.location.href);
+    let token = data.user ? data.user.accessToken : '';
+    
+    await fetch(`http://localhost:3000/cars`, {
+      mode: 'cors',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+      }
+    }).then((res) => {
+      return res.json();
+    }).then((data) => {
+      if(data.length > 0){
+        setCarData(data);
+        setNoCars(false);
+      }else {
+        setNoCars(true);
+      }
+     
+      window.history.pushState({}, '', url.toString());
+    })
+      .catch((err) => {
+        console.log(err);
+      });
   }
 
   function selectCarHandler(keys:any){
@@ -140,9 +169,11 @@ export default function Cars({ cars }: IndexCarsPageProps) {
                 seatsValue={seats}
                 setSeatsValue={setSeats}
                 useFiltersHanlder={fetchFilteredData}
+                clearFiltersHandler={clearFiltersHandler}
                 />
           </View>
         }
+        {(carData.length > 0 && !noCars) &&
         <TableView
           aria-label="Table with car available for rent"
           flex
@@ -150,6 +181,7 @@ export default function Cars({ cars }: IndexCarsPageProps) {
           selectionStyle="highlight"
           alignSelf="center"
           width="100%"
+          UNSAFE_className='cars-tablee'
           onSelectionChange={(keys)=>selectCarHandler(keys)}
         >
           <TableHeader columns={columns}>
@@ -159,10 +191,15 @@ export default function Cars({ cars }: IndexCarsPageProps) {
               </Column>
             )}
           </TableHeader>
-          <TableBody items={carData}>
-            {(item: any) => <Row>{columnKey => <Cell>{item[columnKey]}</Cell>}</Row>}
-          </TableBody>
+          
+            <TableBody items={carData}>
+              {(item: any) => <Row>{columnKey => <Cell>{item[columnKey]}</Cell>}</Row>}
+            </TableBody>
         </TableView>
+      }
+      {noCars &&
+        <Header>No cars available!</Header>
+      }
     </PageContainer>
   );
 }

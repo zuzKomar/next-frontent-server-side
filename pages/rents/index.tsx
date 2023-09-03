@@ -1,5 +1,5 @@
 import { PageContainer } from '../components/PageContainer';
-import { Cell, Column, Row, TableView, TableBody, TableHeader, Button } from '@adobe/react-spectrum';
+import { Cell, Column, Row, TableView, TableBody, TableHeader, Button, Header } from '@adobe/react-spectrum';
 import { GetServerSidePropsContext } from 'next';
 import { days } from '../cars/components/rentModal';
 import { useRouter } from 'next/router'
@@ -60,28 +60,34 @@ export default function Rents({rents}: RentsPageProps) {
     <PageContainer>
       <IndexPage />
       <h1>Your rents</h1>
+
+    {modifiedRents.length > 0 ?
       <TableView
-          aria-label="Table with your rents"
-          flex
-          selectionMode="single"
-          selectionStyle="highlight"
-          alignSelf="center"
-          width="100%"
-        >
-          <TableHeader columns={columns}>
-            {column => (
-              <Column key={column.uid} align="center" width="auto">
-                {column.name}
-              </Column>
-            )}
-          </TableHeader>
-          <TableBody items={modifiedRents}>
-            {(item: any) => 
-            <Row>{columnKey => <Cell>{ columnKey !== 'reportDamage' ? item[columnKey] : <Button variant='primary' isDisabled={item.damagedCar === 'No' ? false : true} onPress={() => handleDamageReport(item.id)}>Report damage</Button>}</Cell>}
-            </Row>
-            }
-          </TableBody>
-        </TableView>
+      aria-label="Table with your rents"
+      flex
+      selectionMode="single"
+      selectionStyle="highlight"
+      alignSelf="center"
+      width="100%"
+    >
+      <TableHeader columns={columns}>
+        {column => (
+          <Column key={column.uid} align="center" width="auto">
+            {column.name}
+          </Column>
+        )}
+      </TableHeader>
+      <TableBody items={modifiedRents}>
+        {(item: any) => 
+        <Row>{columnKey => <Cell>{ columnKey !== 'reportDamage' ? item[columnKey] : <Button variant='primary' isDisabled={item.damagedCar === 'No' ? false : true} onPress={() => handleDamageReport(item.id)}>Report damage</Button>}</Cell>}
+        </Row>
+        }
+      </TableBody>
+    </TableView>
+    :
+    <Header>No rents available!</Header>
+    }
+      
     </PageContainer>
   );
 }
