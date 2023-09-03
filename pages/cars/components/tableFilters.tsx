@@ -19,6 +19,7 @@ type TableFiltersType = {
     seatsValue: {start: number, end: number};
     setSeatsValue: ({start, end}) => void;
     useFiltersHanlder: () => void;
+    clearFiltersHandler: () => void;
 }
 
 const TableFilters = ({transmissionValue, 
@@ -37,7 +38,8 @@ const TableFilters = ({transmissionValue,
                         setCostPerDayValue,
                         seatsValue,
                         setSeatsValue,
-                        useFiltersHanlder
+                        useFiltersHanlder,
+                        clearFiltersHandler
                         }: TableFiltersType) =>{
 
     const transmissionOptions = [
@@ -65,7 +67,7 @@ const TableFilters = ({transmissionValue,
                     inputValue={transmissionValue}
                     onInputChange={setTransmissionValue}
                 >
-                    {item => <Item>{item.name}</Item>}
+                    {item => <Item textValue={item.name}>{item.name}</Item>}
                 </ComboBox>
             </Flex>
             <Flex direction='row' gap="size-150" wrap >
@@ -117,6 +119,10 @@ const TableFilters = ({transmissionValue,
                         variant="primary" 
                         UNSAFE_style={{cursor: 'pointer'}}
                         onPress={useFiltersHanlder}>Apply filters</Button>
+                                         <Button type='button' 
+                        variant="primary" 
+                        UNSAFE_style={{cursor: 'pointer'}}
+                        onPress={clearFiltersHandler}>Clear filters</Button>
             </Flex>
         </Flex>
     )
