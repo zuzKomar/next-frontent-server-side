@@ -7,3 +7,15 @@ export type IFormInputs = {
     password?: string
     confirmPassword?: string
   };  
+
+  export type CarFiltersType = {
+    brand: string;
+    model: string;
+    transmission: {id: number, name: string};
+    productionYear: {start: number, end: number};
+    power: {start: number, end: number};
+    capacity: {start: number, end: number};
+    numberOfSeats: {start: number, end: number};
+    costPerDay: {start: number, end: number};
+  }
+  

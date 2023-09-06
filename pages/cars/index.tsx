@@ -7,6 +7,7 @@ import { Session } from 'next-auth';
 import { useState } from 'react'
 import TableFilters from './components/tableFilters';
 import { Car } from '../types/Car';
+import { CarFiltersType } from "../types/UserForm"
 import IndexPage from '../Head';
 
 interface IndexCarsPageProps {
@@ -16,14 +17,6 @@ interface IndexCarsPageProps {
 export default function Cars({ cars }: IndexCarsPageProps) {
   const router = useRouter();
   const [showTableFilters, setShowTableFilters] = useState(false)
-  const [brand, setBrand] = useState('');
-  const [model, setModel] = useState('');
-  const [transmission, setTransmission] = useState('');
-  const [productionYears, setProductionYears] = useState({start: 1970, end: 2023})
-  const [horsePower, setHorsePower] = useState({start: 80, end: 800})
-  const [capacity, setCapacity] = useState({start: 0, end: 10})
-  const [costPerDay, setCostPerDay] = useState({start: 50, end: 1000})
-  const [seats, setSeats] = useState({start: 2, end: 7});
   const [carData, setCarData] = useState<any[]>([...cars]);
   const [noCars, setNoCars] = useState<boolean>(cars.length === 0);
   const { data } = useSession();
@@ -37,47 +30,47 @@ export default function Cars({ cars }: IndexCarsPageProps) {
     { name: 'Cost/day', uid: 'costPerDay' },
   ];
 
-  async function fetchFilteredData(){
+  async function fetchFilteredData(filtersData: CarFiltersType){
     let newUrl = '?';
 
-    if (brand.length > 0){
-      newUrl += 'brand=' + brand + '&';
+    if (filtersData.brand.length > 0){
+      newUrl += 'brand=' + filtersData.brand + '&';
     }
-    if (model.length > 0){
-      newUrl += 'model=' + model + '&';;
+    if (filtersData.model.length > 0){
+      newUrl += 'model=' + filtersData.model + '&';;
     }
-    if (transmission.length > 0){
-      newUrl += 'transmission=' + transmission + '&';;
+    if (filtersData.transmission.name.length > 0){
+      newUrl += 'transmission=' + filtersData.transmission.name + '&';;
     } 
-    if (productionYears.start > 1970){
-      newUrl += 'productionYearFrom=' + productionYears.start + '&';;
+    if (filtersData.productionYear.start > 1970){
+      newUrl += 'productionYearFrom=' + filtersData.productionYear.start + '&';;
     }
-    if (productionYears.end < 2023){
-      newUrl += 'productionYearTo=' + productionYears.end + '&';;
+    if (filtersData.productionYear.end < 2023){
+      newUrl += 'productionYearTo=' + filtersData.productionYear.end + '&';;
     }
-    if (horsePower.start > 80){
-      newUrl += 'powerFrom=' + horsePower.start + '&';;
+    if (filtersData.power.start > 80){
+      newUrl += 'powerFrom=' + filtersData.power.start + '&';;
     }
-    if (horsePower.end < 800){
-      newUrl += 'powerTo=' + horsePower.end + '&';;
+    if (filtersData.power.end < 800){
+      newUrl += 'powerTo=' + filtersData.power.end + '&';;
     }
-    if (capacity.start > 0){
-      newUrl += 'capacityFrom=' + capacity.start + '&';;
+    if (filtersData.capacity.start > 0){
+      newUrl += 'capacityFrom=' + filtersData.capacity.start + '&';;
     }
-    if (capacity.end < 10){
-      newUrl += 'capacityTo=' + capacity.end + '&';;
+    if (filtersData.capacity.end < 10){
+      newUrl += 'capacityTo=' + filtersData.capacity.end + '&';;
     }
-    if (costPerDay.start > 50){
-      newUrl += 'costPerDayFrom=' + costPerDay.start + '&';;
+    if (filtersData.costPerDay.start > 50){
+      newUrl += 'costPerDayFrom=' + filtersData.costPerDay.start + '&';;
     }
-    if (costPerDay.end < 1000){
-      newUrl += 'costPerDayTo=' + costPerDay.end + '&';;
+    if (filtersData.costPerDay.end < 1000){
+      newUrl += 'costPerDayTo=' + filtersData.costPerDay.end + '&';;
     }
-    if (seats.start > 2){
-      newUrl += 'numberOfSeatsFrom=' + seats.start + '&';;
+    if (filtersData.numberOfSeats.start > 2){
+      newUrl += 'numberOfSeatsFrom=' + filtersData.numberOfSeats.start + '&';;
     }
-    if (seats.end < 7){
-      newUrl += 'numberOfSeatsTo=' + seats.end + '&';;
+    if (filtersData.numberOfSeats.end < 7){
+      newUrl += 'numberOfSeatsTo=' + filtersData.numberOfSeats.end + '&';;
     }
 
     const url = new URL(window.location.href);
@@ -93,9 +86,9 @@ export default function Cars({ cars }: IndexCarsPageProps) {
           'Authorization': 'Bearer ' + token
         }
       }).then((res) => {
-        console.log(res.json());
         return res.json();
       }).then((data) => {
+        console.log(data);
         if(data.length > 0){
           setCarData(data);
           setNoCars(false);
@@ -130,7 +123,7 @@ export default function Cars({ cars }: IndexCarsPageProps) {
       }else {
         setNoCars(true);
       }
-     
+
       window.history.pushState({}, '', url.toString());
     })
       .catch((err) => {
@@ -152,22 +145,6 @@ export default function Cars({ cars }: IndexCarsPageProps) {
         {showTableFilters &&
           <View UNSAFE_style={{'backgroundColor': 'rgba(0,0,0,0.5)'}}>
             <TableFilters 
-                transmissionValue={transmission} 
-                setTransmissionValue={setTransmission}
-                brandValue={brand}
-                setBrandValue={setBrand}
-                modelValue={model}
-                setModelValue={setModel}
-                productionYearsValue={productionYears}
-                setProductionYearsValue={setProductionYears}
-                powerHorsesValue={horsePower}
-                setPowerHorsesValue={setHorsePower}
-                capacityValue={capacity}
-                setCapacityValue={setCapacity}
-                costPerDayValue={costPerDay}
-                setCostPerDayValue={setCostPerDay}
-                seatsValue={seats}
-                setSeatsValue={setSeats}
                 useFiltersHanlder={fetchFilteredData}
                 clearFiltersHandler={clearFiltersHandler}
                 />
