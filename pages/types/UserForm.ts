@@ -9,8 +9,8 @@ export type IFormInputs = {
   };  
 
   export type CarFiltersType = {
-    brand: string;
-    model: string;
+    brand: string | null;
+    model: string | null;
     transmission: {id: number, name: string};
     productionYear: {start: number, end: number};
     power: {start: number, end: number};

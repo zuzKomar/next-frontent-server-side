@@ -33,10 +33,10 @@ export default function Cars({ cars }: IndexCarsPageProps) {
   async function fetchFilteredData(filtersData: CarFiltersType){
     let newUrl = '?';
 
-    if (filtersData.brand.length > 0){
+    if (filtersData.brand && filtersData.brand.length > 0){
       newUrl += 'brand=' + filtersData.brand + '&';
     }
-    if (filtersData.model.length > 0){
+    if (filtersData.model && filtersData.model.length > 0){
       newUrl += 'model=' + filtersData.model + '&';;
     }
     if (filtersData.transmission.name.length > 0){

@@ -6,14 +6,32 @@ import { CarFiltersType } from "../../types/UserForm";
 import { yupResolver } from '@hookform/resolvers/yup';
 
 const schema = yup.object({
-    brand: yup.string().min(2).max(30),
-    model: yup.string().min(2).max(30),
-    transmission: yup.string(),
-    productionYear: yup.number().min(1970).max(2024),
-    power: yup.number().min(50).max(80),
-    capacity: yup.number().min(0).max(10),
-    numberOfSeats: yup.number().min(2).max(7),
-    costPerDay: yup.number().min(50).max(1000)
+    brand: yup.string().min(2).max(30).nullable().transform(value => value === '' ? null : value),
+    model: yup.string().min(2).max(30).nullable().transform(value => value === '' ? null : value),
+    transmission: yup.object().shape({
+        id: yup.number(),
+        name: yup.string()
+    }),
+    productionYear: yup.object().shape({
+        start: yup.number().min(1970),
+        end: yup.number().max(2024)
+    }),
+    power: yup.object().shape({
+        start: yup.number().min(50),
+        end: yup.number().max(800)
+    }),
+    capacity: yup.object().shape({
+        start: yup.number().min(0),
+        end: yup.number().max(10)
+    }),
+    numberOfSeats: yup.object().shape({
+        start: yup.number().min(2),
+        end: yup.number().max(7)
+    }),
+    costPerDay: yup.object().shape({
+        start: yup.number().min(50),
+        end: yup.number().max(1000)
+    }),
 })
 
 type TableFiltersType = {
@@ -25,11 +43,11 @@ const TableFilters = ({ useFiltersHanlder,
                         clearFiltersHandler
                         }: TableFiltersType) =>{
 
-const { control, handleSubmit, formState: { errors }, getValues, reset } = useForm<CarFiltersType>({
+const { control, handleSubmit, formState: { errors, isValid }, getValues, reset } = useForm<CarFiltersType>({
     resolver: yupResolver(schema),
     defaultValues: {
-        brand: "",
-        model: "",
+        brand: null,
+        model: null,
         transmission: {id: 0, name: ''},
         productionYear: {start: 1970, end: 2024},
         power: {start: 50, end: 800},
@@ -45,8 +63,14 @@ const { control, handleSubmit, formState: { errors }, getValues, reset } = useFo
         {id: 2, name: 'AUTOMATIC'},
     ]
 
-    const onSubmit: SubmitHandler<CarFiltersType> = async () => {
-       await useFiltersHanlder(getValues());
+    const onSubmit: SubmitHandler<CarFiltersType> = async (data) => {
+        console.log(data);
+        console.log(isValid);
+        console.log(errors);
+        if(isValid){
+            console.log('execution...')
+            await useFiltersHanlder(data);
+        }
       }
      
     return (
@@ -162,7 +186,7 @@ const { control, handleSubmit, formState: { errors }, getValues, reset } = useFo
                     />
                     )}
                     />
-                 <Button type='button' 
+                 <Button type='submit' 
                         variant="primary" 
                         UNSAFE_style={{cursor: 'pointer'}}
                         onPress={() =>
