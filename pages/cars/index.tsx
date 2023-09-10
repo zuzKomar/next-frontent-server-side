@@ -77,6 +77,7 @@ export default function Cars({ cars }: IndexCarsPageProps) {
     let pathname = url.pathname.slice(1) + newUrl.slice(0, -1);
 
     if(pathname.length > 5){
+      window.history.pushState({}, null, pathname);
       let token = data.user ? data.user.accessToken : '';
 
      await fetch(`http://localhost:3000/${pathname}`, {
@@ -88,15 +89,12 @@ export default function Cars({ cars }: IndexCarsPageProps) {
       }).then((res) => {
         return res.json();
       }).then((data) => {
-        console.log(data);
         if(data.length > 0){
           setCarData(data);
           setNoCars(false);
         }else {
           setNoCars(true);
         }
-       
-        window.history.pushState({}, '', url.toString());
       })
         .catch((err) => {
           console.log(err);
@@ -105,7 +103,7 @@ export default function Cars({ cars }: IndexCarsPageProps) {
   }
 
   async function clearFiltersHandler() {
-    const url = new URL(window.location.href);
+    window.history.pushState({}, '', 'cars');
     let token = data.user ? data.user.accessToken : '';
     
     await fetch(`http://localhost:3000/cars`, {
@@ -123,8 +121,6 @@ export default function Cars({ cars }: IndexCarsPageProps) {
       }else {
         setNoCars(true);
       }
-
-      window.history.pushState({}, '', url.toString());
     })
       .catch((err) => {
         console.log(err);

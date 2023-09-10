@@ -43,11 +43,11 @@ const TableFilters = ({ useFiltersHanlder,
                         clearFiltersHandler
                         }: TableFiltersType) =>{
 
-const { control, handleSubmit, formState: { errors, isValid }, getValues, reset } = useForm<CarFiltersType>({
+const { control, handleSubmit, formState: { isValid, defaultValues }, getValues, reset } = useForm<CarFiltersType>({
     resolver: yupResolver(schema),
     defaultValues: {
-        brand: null,
-        model: null,
+        brand: '',
+        model: '',
         transmission: {id: 0, name: ''},
         productionYear: {start: 1970, end: 2024},
         power: {start: 50, end: 800},
@@ -64,14 +64,15 @@ const { control, handleSubmit, formState: { errors, isValid }, getValues, reset 
     ]
 
     const onSubmit: SubmitHandler<CarFiltersType> = async (data) => {
-        console.log(data);
-        console.log(isValid);
-        console.log(errors);
         if(isValid){
-            console.log('execution...')
             await useFiltersHanlder(data);
         }
       }
+
+    const onCancel = async () => {
+        reset(defaultValues);
+        await clearFiltersHandler();
+    }
      
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -195,9 +196,7 @@ const { control, handleSubmit, formState: { errors, isValid }, getValues, reset 
                 <Button type='button' 
                         variant="primary" 
                         UNSAFE_style={{cursor: 'pointer'}}
-                        onPress={() => {
-                            reset()
-                            clearFiltersHandler()}}>Clear filters</Button>
+                        onPress={onCancel}>Clear filters</Button>
             </Flex>
             </Flex>
         </form>
