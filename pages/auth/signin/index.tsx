@@ -36,7 +36,6 @@ export default function Signin() {
         if(res.error){
             console.log(res.error)
         }else {
-            console.log(res);
             router.push(`/`)
         }
     }

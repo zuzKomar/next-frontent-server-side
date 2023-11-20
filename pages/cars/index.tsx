@@ -1,5 +1,5 @@
 import { GetServerSidePropsContext } from 'next';
-import { View, Button, Flex, TableView, TableHeader, Column, TableBody, Row, Cell } from '@adobe/react-spectrum';
+import { View, Button, Flex, TableView, TableHeader, Column, TableBody, Row, Cell, Header } from '@adobe/react-spectrum';
 import { PageContainer } from '../components/PageContainer';
 import { useRouter } from 'next/router'
 import { getSession, useSession } from "next-auth/react";
@@ -7,6 +7,7 @@ import { Session } from 'next-auth';
 import { useState } from 'react'
 import TableFilters from './components/tableFilters';
 import { Car } from '../types/Car';
+import { CarFiltersType } from "../types/UserForm"
 import IndexPage from '../Head';
 
 interface IndexCarsPageProps {
@@ -16,15 +17,8 @@ interface IndexCarsPageProps {
 export default function Cars({ cars }: IndexCarsPageProps) {
   const router = useRouter();
   const [showTableFilters, setShowTableFilters] = useState(false)
-  const [brand, setBrand] = useState('');
-  const [model, setModel] = useState('');
-  const [transmission, setTransmission] = useState('');
-  const [productionYears, setProductionYears] = useState({start: 1970, end: 2023})
-  const [horsePower, setHorsePower] = useState({start: 80, end: 800})
-  const [capacity, setCapacity] = useState({start: 0, end: 10})
-  const [costPerDay, setCostPerDay] = useState({start: 50, end: 1000})
-  const [seats, setSeats] = useState({start: 2, end: 7});
-  const [carData, setCarData] = useState<Car[]>([...cars]);
+  const [carData, setCarData] = useState<any[]>([...cars]);
+  const [noCars, setNoCars] = useState<boolean>(cars.length === 0);
   const { data } = useSession();
 
   let columns = [
@@ -36,53 +30,54 @@ export default function Cars({ cars }: IndexCarsPageProps) {
     { name: 'Cost/day', uid: 'costPerDay' },
   ];
 
-  async function fetchFilteredData(){
+  async function fetchFilteredData(filtersData: CarFiltersType){
     let newUrl = '?';
 
-    if (brand.length > 0){
-      newUrl += 'brand=' + brand + '&';
+    if (filtersData.brand && filtersData.brand.length > 0){
+      newUrl += 'brand=' + filtersData.brand + '&';
     }
-    if (model.length > 0){
-      newUrl += 'model=' + model + '&';;
+    if (filtersData.model && filtersData.model.length > 0){
+      newUrl += 'model=' + filtersData.model + '&';;
     }
-    if (transmission.length > 0){
-      newUrl += 'transmission=' + transmission + '&';;
+    if (filtersData.transmission.name.length > 0){
+      newUrl += 'transmission=' + filtersData.transmission.name + '&';;
     } 
-    if (productionYears.start > 1970){
-      newUrl += 'productionYearFrom=' + productionYears.start + '&';;
+    if (filtersData.productionYear.start > 1970){
+      newUrl += 'productionYearFrom=' + filtersData.productionYear.start + '&';;
     }
-    if (productionYears.end < 2023){
-      newUrl += 'productionYearTo=' + productionYears.end + '&';;
+    if (filtersData.productionYear.end < 2023){
+      newUrl += 'productionYearTo=' + filtersData.productionYear.end + '&';;
     }
-    if (horsePower.start > 80){
-      newUrl += 'powerFrom=' + horsePower.start + '&';;
+    if (filtersData.power.start > 80){
+      newUrl += 'powerFrom=' + filtersData.power.start + '&';;
     }
-    if (horsePower.end < 800){
-      newUrl += 'powerTo=' + horsePower.end + '&';;
+    if (filtersData.power.end < 800){
+      newUrl += 'powerTo=' + filtersData.power.end + '&';;
     }
-    if (capacity.start > 0){
-      newUrl += 'capacityFrom=' + capacity.start + '&';;
+    if (filtersData.capacity.start > 0){
+      newUrl += 'capacityFrom=' + filtersData.capacity.start + '&';;
     }
-    if (capacity.end < 10){
-      newUrl += 'capacityTo=' + capacity.end + '&';;
+    if (filtersData.capacity.end < 10){
+      newUrl += 'capacityTo=' + filtersData.capacity.end + '&';;
     }
-    if (costPerDay.start > 50){
-      newUrl += 'costPerDayFrom=' + costPerDay.start + '&';;
+    if (filtersData.costPerDay.start > 50){
+      newUrl += 'costPerDayFrom=' + filtersData.costPerDay.start + '&';;
     }
-    if (costPerDay.end < 1000){
-      newUrl += 'costPerDayTo=' + costPerDay.end + '&';;
+    if (filtersData.costPerDay.end < 1000){
+      newUrl += 'costPerDayTo=' + filtersData.costPerDay.end + '&';;
     }
-    if (seats.start > 2){
-      newUrl += 'numberOfSeatsFrom=' + seats.start + '&';;
+    if (filtersData.numberOfSeats.start > 2){
+      newUrl += 'numberOfSeatsFrom=' + filtersData.numberOfSeats.start + '&';;
     }
-    if (seats.end < 7){
-      newUrl += 'numberOfSeatsTo=' + seats.end + '&';;
+    if (filtersData.numberOfSeats.end < 7){
+      newUrl += 'numberOfSeatsTo=' + filtersData.numberOfSeats.end + '&';;
     }
 
     const url = new URL(window.location.href);
     let pathname = url.pathname.slice(1) + newUrl.slice(0, -1);
 
     if(pathname.length > 5){
+      window.history.pushState({}, null, pathname);
       let token = data.user ? data.user.accessToken : '';
 
      await fetch(`http://localhost:3000/${pathname}`, {
@@ -94,19 +89,42 @@ export default function Cars({ cars }: IndexCarsPageProps) {
       }).then((res) => {
         return res.json();
       }).then((data) => {
-        console.log(data);
         if(data.length > 0){
           setCarData(data);
+          setNoCars(false);
         }else {
-          setCarData([]);
+          setNoCars(true);
         }
-       
-        window.history.pushState({}, '', url.toString());
       })
         .catch((err) => {
           console.log(err);
         });
     }
+  }
+
+  async function clearFiltersHandler() {
+    window.history.pushState({}, '', 'cars');
+    let token = data.user ? data.user.accessToken : '';
+    
+    await fetch(`http://localhost:3000/cars`, {
+      mode: 'cors',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+      }
+    }).then((res) => {
+      return res.json();
+    }).then((data) => {
+      if(data.length > 0){
+        setCarData(data);
+        setNoCars(false);
+      }else {
+        setNoCars(true);
+      }
+    })
+      .catch((err) => {
+        console.log(err);
+      });
   }
 
   function selectCarHandler(keys:any){
@@ -123,26 +141,12 @@ export default function Cars({ cars }: IndexCarsPageProps) {
         {showTableFilters &&
           <View UNSAFE_style={{'backgroundColor': 'rgba(0,0,0,0.5)'}}>
             <TableFilters 
-                transmissionValue={transmission} 
-                setTransmissionValue={setTransmission}
-                brandValue={brand}
-                setBrandValue={setBrand}
-                modelValue={model}
-                setModelValue={setModel}
-                productionYearsValue={productionYears}
-                setProductionYearsValue={setProductionYears}
-                powerHorsesValue={horsePower}
-                setPowerHorsesValue={setHorsePower}
-                capacityValue={capacity}
-                setCapacityValue={setCapacity}
-                costPerDayValue={costPerDay}
-                setCostPerDayValue={setCostPerDay}
-                seatsValue={seats}
-                setSeatsValue={setSeats}
                 useFiltersHanlder={fetchFilteredData}
+                clearFiltersHandler={clearFiltersHandler}
                 />
           </View>
         }
+        {(carData.length > 0 && !noCars) &&
         <TableView
           aria-label="Table with car available for rent"
           flex
@@ -150,6 +154,7 @@ export default function Cars({ cars }: IndexCarsPageProps) {
           selectionStyle="highlight"
           alignSelf="center"
           width="100%"
+          UNSAFE_className='cars-tablee'
           onSelectionChange={(keys)=>selectCarHandler(keys)}
         >
           <TableHeader columns={columns}>
@@ -159,10 +164,15 @@ export default function Cars({ cars }: IndexCarsPageProps) {
               </Column>
             )}
           </TableHeader>
-          <TableBody items={carData}>
-            {(item: any) => <Row>{columnKey => <Cell>{item[columnKey]}</Cell>}</Row>}
-          </TableBody>
+          
+            <TableBody items={carData}>
+              {(item: any) => <Row>{columnKey => <Cell>{item[columnKey]}</Cell>}</Row>}
+            </TableBody>
         </TableView>
+      }
+      {noCars &&
+        <Header>No cars available!</Header>
+      }
     </PageContainer>
   );
 }

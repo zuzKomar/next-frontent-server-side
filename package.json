@@ -41,5 +41,8 @@
     "set-cookie-parser": "^2.5.1",
     "typescript": "4.8.4",
     "yup": "^0.32.11"
+  },
+  "devDependencies": {
+    "prettier": "^3.0.2"
   }
 }

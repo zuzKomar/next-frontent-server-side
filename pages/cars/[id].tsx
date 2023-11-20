@@ -31,8 +31,9 @@ export async function getServerSideProps (context: GetServerSidePropsContext){
               }
             }
           }else {
-            const token = session!.user!.accessToken || '';
-            const car = await getCar(context.params!.id, token!);
+            const {user} = session;
+            const token = user?.accessToken || '';
+            const car = await getCar(context.params!.id[0], token!);
           
             return { 
               props: { 
