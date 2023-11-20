@@ -1,125 +1,206 @@
 import { Button, ComboBox, Flex, Item, RangeSlider, TextField } from "@adobe/react-spectrum";
 import React from "react";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import * as yup from "yup";
+import { CarFiltersType } from "../../types/UserForm";
+import { yupResolver } from '@hookform/resolvers/yup';
+
+const schema = yup.object({
+    brand: yup.string().min(2).max(30).nullable().transform(value => value === '' ? null : value),
+    model: yup.string().min(2).max(30).nullable().transform(value => value === '' ? null : value),
+    transmission: yup.object().shape({
+        id: yup.number(),
+        name: yup.string()
+    }),
+    productionYear: yup.object().shape({
+        start: yup.number().min(1970),
+        end: yup.number().max(2024)
+    }),
+    power: yup.object().shape({
+        start: yup.number().min(50),
+        end: yup.number().max(800)
+    }),
+    capacity: yup.object().shape({
+        start: yup.number().min(0),
+        end: yup.number().max(10)
+    }),
+    numberOfSeats: yup.object().shape({
+        start: yup.number().min(2),
+        end: yup.number().max(7)
+    }),
+    costPerDay: yup.object().shape({
+        start: yup.number().min(50),
+        end: yup.number().max(1000)
+    }),
+})
 
 type TableFiltersType = {
-    brandValue: string;
-    setBrandValue: (value: string) => void;
-    modelValue: string;
-    setModelValue: (value: string) => void;
-    transmissionValue: string;
-    setTransmissionValue: (value: string) => void;
-    productionYearsValue: {start: number, end: number};
-    setProductionYearsValue: ({start, end}) => void;
-    powerHorsesValue: {start: number, end: number};
-    setPowerHorsesValue: ({start, end}) => void;
-    capacityValue: {start: number, end: number};
-    setCapacityValue: ({start, end}) => void;
-    costPerDayValue: {start: number, end: number};
-    setCostPerDayValue: ({start, end}) => void;
-    seatsValue: {start: number, end: number};
-    setSeatsValue: ({start, end}) => void;
-    useFiltersHanlder: () => void;
+    useFiltersHanlder: (filtersData: CarFiltersType) => void;
+    clearFiltersHandler: () => void;
 }
 
-const TableFilters = ({transmissionValue, 
-                        setTransmissionValue,
-                        brandValue,
-                        setBrandValue,
-                        modelValue, 
-                        setModelValue,
-                        productionYearsValue,
-                        setProductionYearsValue,
-                        powerHorsesValue,
-                        setPowerHorsesValue,
-                        capacityValue,
-                        setCapacityValue,
-                        costPerDayValue, 
-                        setCostPerDayValue,
-                        seatsValue,
-                        setSeatsValue,
-                        useFiltersHanlder
+const TableFilters = ({ useFiltersHanlder,
+                        clearFiltersHandler
                         }: TableFiltersType) =>{
+
+const { control, handleSubmit, formState: { isValid, defaultValues }, getValues, reset } = useForm<CarFiltersType>({
+    resolver: yupResolver(schema),
+    defaultValues: {
+        brand: '',
+        model: '',
+        transmission: {id: 0, name: ''},
+        productionYear: {start: 1970, end: 2024},
+        power: {start: 50, end: 800},
+        capacity: {start: 0, end: 10},
+        numberOfSeats: {start: 2, end: 7},
+        costPerDay: {start: 50, end: 1000},
+    }
+})
 
     const transmissionOptions = [
         {id: 0, name: ''},
         {id: 1, name: 'MANUAL'},
         {id: 2, name: 'AUTOMATIC'},
     ]
+
+    const onSubmit: SubmitHandler<CarFiltersType> = async (data) => {
+        if(isValid){
+            await useFiltersHanlder(data);
+        }
+      }
+
+    const onCancel = async () => {
+        reset(defaultValues);
+        await clearFiltersHandler();
+    }
      
     return (
-        <Flex direction='column'>
+        <form onSubmit={handleSubmit(onSubmit)}>
+            <Flex direction='column'>
             <Flex direction='row' gap="size-150" wrap marginBottom="10px">
-                <TextField
-                    label="Brand:"
-                    value={brandValue}
-                    onChange={setBrandValue} />
-
-                <TextField
-                    label="Model:"
-                    value={modelValue}
-                    onChange={setModelValue} />
-
-                <ComboBox
-                    label="Transmission type:"
-                    defaultItems={transmissionOptions}
-                    inputValue={transmissionValue}
-                    onInputChange={setTransmissionValue}
-                >
-                    {item => <Item>{item.name}</Item>}
-                </ComboBox>
+                <Controller
+                    name="brand"
+                    control={control}
+                    render={({field}) =>    (
+                    <TextField
+                        label="Brand:"
+                        value={field.value}
+                        onChange={field.onChange} />
+                        )}
+                />   
+                <Controller
+                    name="model"
+                    control={control}
+                    render={({field}) =>    (
+                    <TextField
+                        label="Model:"
+                        value={field.value}
+                        onChange={field.onChange} />
+                        )}
+                />   
+                <Controller
+                    name="transmission"
+                    control={control}
+                    render={({field}) => (
+                    <ComboBox
+                        label="Transmission type:"
+                        defaultItems={transmissionOptions}
+                        inputValue={field.value.name}
+                        onInputChange={field.onChange}
+                    >
+                        {item => <Item textValue={item.name}>{item.name}</Item>}
+                     </ComboBox>
+                    )}
+                />
             </Flex>
             <Flex direction='row' gap="size-150" wrap >
-                <RangeSlider
-                    label="Prod. year:"
-                    minValue={1970}
-                    maxValue={2023}
-                    value={productionYearsValue}
-                    onChange={setProductionYearsValue}
-                    formatOptions={{style: 'decimal'}}
+                <Controller
+                    name="productionYear"
+                    control={control}
+                    render={({field}) => (
+                    <RangeSlider
+                        label="Prod. year:"
+                        minValue={1970}
+                        maxValue={2023}
+                        value={field.value}
+                        onChange={field.onChange}
+                        formatOptions={{style: 'decimal'}}
+                    />
+                    )}
                 />
-
-                <RangeSlider
-                    label="Horsepower:"
-                    minValue={80}
-                    maxValue={800}
-                    value={powerHorsesValue}
-                    onChange={setPowerHorsesValue}
-                    formatOptions={{style: 'decimal'}}
+                <Controller
+                    name="power"
+                    control={control}
+                    render={({field}) => (
+                        <RangeSlider
+                            label="Horsepower:"
+                            minValue={80}
+                            maxValue={800}
+                            value={field.value}
+                            onChange={field.onChange}
+                            formatOptions={{style: 'decimal'}}
+                        />
+                    )}
                 />
-
-                <RangeSlider
-                    label="Capacity:"
-                    minValue={0.0}
-                    maxValue={10.0}
-                    value={capacityValue}
-                    onChange={setCapacityValue}
-                    formatOptions={{style: 'decimal'}}
+                <Controller
+                    name="capacity"
+                    control={control}
+                    render={({field}) => (
+                    <RangeSlider
+                        label="Capacity:"
+                        minValue={0.0}
+                        maxValue={10.0}
+                        value={field.value}
+                        onChange={field.onChange}
+                        formatOptions={{style: 'decimal'}}
+                    />
+                    )}
                 />
+                
             </Flex>
             <Flex direction='row' gap="size-150" wrap marginBottom="5px">
-                <RangeSlider
-                    label="Number of seats:"
-                    minValue={2}
-                    maxValue={7}
-                    value={seatsValue}
-                    onChange={setSeatsValue}
-                    formatOptions={{style: 'decimal'}}
+                <Controller
+                    name="numberOfSeats"
+                    control={control}
+                    render={({field}) => (
+                        <RangeSlider
+                        label="Number of seats:"
+                        minValue={2}
+                        maxValue={7}
+                        value={field.value}
+                        onChange={field.onChange}
+                        formatOptions={{style: 'decimal'}}
+                    />
+                    )}
                 />
-                <RangeSlider
-                    label="Cost/day:"
-                    minValue={50}
-                    maxValue={1000}
-                    value={costPerDayValue}
-                    onChange={setCostPerDayValue}
-                    formatOptions={{style: 'decimal'}}
-                />
-                 <Button type='button' 
+                <Controller
+                    name="costPerDay"
+                    control={control}
+                    render={({field}) => (
+                        <RangeSlider
+                        label="Cost/day:"
+                        minValue={50}
+                        maxValue={1000}
+                        value={field.value}
+                        onChange={field.onChange}
+                        formatOptions={{style: 'decimal'}}
+                    />
+                    )}
+                    />
+                 <Button type='submit' 
                         variant="primary" 
                         UNSAFE_style={{cursor: 'pointer'}}
-                        onPress={useFiltersHanlder}>Apply filters</Button>
+                        onPress={() =>
+                            onSubmit(getValues())
+                            }>Apply filters</Button>
+                <Button type='button' 
+                        variant="primary" 
+                        UNSAFE_style={{cursor: 'pointer'}}
+                        onPress={onCancel}>Clear filters</Button>
             </Flex>
-        </Flex>
-    )
+            </Flex>
+        </form>
+        )
 }
 
 export default TableFilters;

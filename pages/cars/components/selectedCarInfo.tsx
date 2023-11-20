@@ -12,12 +12,12 @@ import { useSession } from "next-auth/react";
 
 const SelectedCarInfo = ({data}: CarPageProps) => {
     const [open, setOpen] = useState(false);
+
     let photoPath = `../static/${data.photo}.png`
 
     const session = useSession();
     const userId = session.data.user.id;
     const token = session.data.user.accessToken;
-    const nextCarRents = data.rents; //filtr all rents that are gonna be in the future, pass it to modal
 
     function handleCarRental(carId: number, userId: number, date: any, dueDate: any){
         //check if this car is available this time
@@ -49,17 +49,22 @@ const SelectedCarInfo = ({data}: CarPageProps) => {
         const dateTo = '' + dueDate.year + '-' + (dueDate.month.toString().length === 1 ? ('0'+dueDate.month) : dueDate.month) + '-' + (dueDate.day.toString().length === 1 ? ('0' + dueDate.day) : dueDate.day) + 'T08:00:00.000Z';
         //check if there are any rents in selected dates
         let isBooked = false;
-
-        for(let rent of data.rents){
-            if((new Date(dateFrom) >= new Date(rent.date) && new Date(dateFrom) <= new Date(rent.dueDate)) 
-                || (new Date(dateTo) >= new Date(rent.date) && new Date(dateTo) <= new Date(rent.dueDate)) 
-                || ((new Date(dateFrom) <= new Date(rent.date) && (new Date(dateTo) >= new Date(rent.date) )))){
-                console.log('konflikt dat');
-                isBooked = true;
-            }else {
-                console.log('brak konfliktu');
+        if(data.rents.length > 0){
+            for(let rent of data.rents){
+                if((new Date(dateFrom) >= new Date(rent.date) && new Date(dateFrom) <= new Date(rent.dueDate)) 
+                    || (new Date(dateTo) >= new Date(rent.date) && new Date(dateTo) <= new Date(rent.dueDate)) 
+                    || ((new Date(dateFrom) <= new Date(rent.date) && (new Date(dateTo) >= new Date(rent.date) )))){
+                    console.log('konflikt dat');
+                    isBooked = true;
+                }else {
+                    console.log('brak konfliktu');
+                    isBooked = false;
+                }
             }
+        }else {
+            isBooked = false;
         }
+
         return isBooked;
     }
 
@@ -117,7 +122,7 @@ const SelectedCarInfo = ({data}: CarPageProps) => {
                         </Button>
                         <RentModal 
                             carId={data.id} 
-                            userId={userId} 
+                            userId={parseInt(userId)} 
                             costPerDay={data.costPerDay} 
                             closeHandler={setOpen} 
                             confirmHandler={handleCarRental} 
