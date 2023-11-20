@@ -1,13 +1,13 @@
 import { GetServerSidePropsContext } from 'next';
 import { View, Button, Flex, TableView, TableHeader, Column, TableBody, Row, Cell, Header } from '@adobe/react-spectrum';
-import { PageContainer } from '../components/PageContainer';
+import { PageContainer } from '../../components/PageContainer';
 import { useRouter } from 'next/router'
 import { getSession, useSession } from "next-auth/react";
 import { Session } from 'next-auth';
 import { useState } from 'react'
 import TableFilters from './components/tableFilters';
-import { Car } from '../types/Car';
-import { CarFiltersType } from "../types/UserForm"
+import { Car } from '../../types/Car';
+import { CarFiltersType } from "../../types/UserForm"
 import IndexPage from '../Head';
 
 interface IndexCarsPageProps {

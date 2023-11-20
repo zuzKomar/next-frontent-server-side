@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import { GetServerSidePropsContext } from "next";
 import { getSession, signOut, useSession } from "next-auth/react";
-import { PageContainer } from "../components/PageContainer";
-import { User } from "../types/User";
+import { PageContainer } from "../../components/PageContainer";
+import { User } from "../../types/User";
 import * as yup from "yup";
 import styles from '../../styles/signup.module.scss'
 import { Button, Form, TextField, View } from "@adobe/react-spectrum";
-import { IFormInputs } from "../types/UserForm";
+import { IFormInputs } from "../../types/UserForm";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useRouter } from "next/router";

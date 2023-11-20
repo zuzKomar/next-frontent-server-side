@@ -1,7 +1,9 @@
   // Your Next.js configuration
 module.exports = {
     transpilePackages: [  '@adobe/react-spectrum',
+    '@react-spectrum/actionbar',
     '@react-spectrum/actiongroup',
+    '@react-spectrum/avatar',
     '@react-spectrum/breadcrumbs',
     '@react-spectrum/badge',
     '@react-spectrum/button',
@@ -16,6 +18,7 @@ module.exports = {
     '@react-spectrum/form',
     '@react-spectrum/icon',
     '@react-spectrum/illustratedmessage',
+    '@react-spectrum/inlinealert',
     '@react-spectrum/image',
     '@react-spectrum/label',
     '@react-spectrum/labeledvalue',
@@ -37,6 +40,7 @@ module.exports = {
     '@react-spectrum/switch',
     '@react-spectrum/table',
     '@react-spectrum/tabs',
+    '@react-spectrum/tag',
     '@react-spectrum/text',
     '@react-spectrum/textfield',
     '@react-spectrum/theme-dark',

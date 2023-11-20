@@ -1,10 +1,10 @@
-import { PageContainer } from '../components/PageContainer';
+import { PageContainer } from '../../components/PageContainer';
 import { Cell, Column, Row, TableView, TableBody, TableHeader, Button, Header } from '@adobe/react-spectrum';
 import { GetServerSidePropsContext } from 'next';
 import { days } from '../cars/components/rentModal';
 import { useRouter } from 'next/router'
 import { getSession, useSession } from "next-auth/react";
-import { Rent } from '../types/Rent';
+import { Rent } from '../../types/Rent';
 import IndexPage from '../Head';
 
 type RentsPageProps = {

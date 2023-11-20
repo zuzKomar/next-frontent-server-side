@@ -1,12 +1,12 @@
 import { Button, Form, View } from '@adobe/react-spectrum'
-import { PageContainer } from '../../components/PageContainer'
+import { PageContainer } from '../../../components/PageContainer'
 import { useRouter } from 'next/router'
 import { useForm, SubmitHandler } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from '@hookform/resolvers/yup';
 import styles from '../../../styles/signup.module.scss'
 import { signIn } from 'next-auth/react';
-import { IFormInputs } from '../../types/UserForm';
+import { IFormInputs } from '../../../types/UserForm';
 import IndexPage from '../../Head';
 
 const schema = yup.object({

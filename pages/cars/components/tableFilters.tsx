@@ -2,7 +2,7 @@ import { Button, ComboBox, Flex, Item, RangeSlider, TextField } from "@adobe/rea
 import React from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import * as yup from "yup";
-import { CarFiltersType } from "../../types/UserForm";
+import { CarFiltersType } from "../../../types/UserForm";
 import { yupResolver } from '@hookform/resolvers/yup';
 
 const schema = yup.object({

@@ -3,7 +3,7 @@
     height: 100%;
     display: flex;
     justify-content:center;
-    background-image: url(../../public/static/4.webp);
+    background-image: url(../public/static/4.webp);
     background-size: 100%;
     background-repeat: no-repeat
 }
