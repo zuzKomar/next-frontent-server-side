@@ -72,7 +72,7 @@ export default function Rents({rents}: RentsPageProps) {
     >
       <TableHeader columns={columns}>
         {column => (
-          <Column key={column.uid} align="center" width="auto">
+          <Column key={column.uid} align="center" width="100%">
             {column.name}
           </Column>
         )}

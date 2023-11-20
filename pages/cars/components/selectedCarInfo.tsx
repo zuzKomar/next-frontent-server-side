@@ -122,7 +122,7 @@ const SelectedCarInfo = ({data}: CarPageProps) => {
                         </Button>
                         <RentModal 
                             carId={data.id} 
-                            userId={userId} 
+                            userId={parseInt(userId)} 
                             costPerDay={data.costPerDay} 
                             closeHandler={setOpen} 
                             confirmHandler={handleCarRental} 
