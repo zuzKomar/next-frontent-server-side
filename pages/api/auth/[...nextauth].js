@@ -4,46 +4,46 @@ import CredentialsProvider from 'next-auth/providers/credentials';
 async function refreshAccessToken(tokenObject) {
   //console.log('param', tokenObject)
   try {
-    console.log(process.env.NEST_URL)
-      // Get a new set of tokens with a refreshToken
-      const tokenResponse = await fetch(`${process.env.NEST_URL}auth/refresh`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + tokenObject.refreshToken
-        }
-      });
+    console.log(process.env.NEST_URL);
+    // Get a new set of tokens with a refreshToken
+    const tokenResponse = await fetch(`${process.env.NEST_URL}auth/refresh`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + tokenObject.refreshToken,
+      },
+    });
 
-      const result = await tokenResponse.json();
-      //console.log('token responseResult', result);
+    const result = await tokenResponse.json();
+    //console.log('token responseResult', result);
 
-      return {
-          ...tokenObject,
-          accessToken: result.token,
-          refreshToken: result.refreshToken
-      }
+    return {
+      ...tokenObject,
+      accessToken: result.token,
+      refreshToken: result.refreshToken,
+    };
   } catch (error) {
-      return {
-          ...tokenObject,
-          error: "RefreshAccessTokenError",
-      }
+    return {
+      ...tokenObject,
+      error: 'RefreshAccessTokenError',
+    };
   }
 }
 
 export default NextAuth({
   providers: [
     CredentialsProvider({
-      // The name to display on the sign in form (e.g. 'Sign in with...')    
-      id: 'credentials',  
+      // The name to display on the sign in form (e.g. 'Sign in with...')
+      id: 'credentials',
       name: 'my-project',
       credentials: {
         email: { label: 'email', type: 'email' },
-        password: { label: 'Password', type: 'password' }
+        password: { label: 'Password', type: 'password' },
       },
-      // The credentials is used to generate a suitable form on the sign in page.      
-      // You can specify whatever fields you are expecting to be submitted.      
-      // e.g. domain, username, password, 2FA token, etc.      
-      // You can pass any HTML attribute to the <input> tag through the object.      
+      // The credentials is used to generate a suitable form on the sign in page.
+      // You can specify whatever fields you are expecting to be submitted.
+      // e.g. domain, username, password, 2FA token, etc.
+      // You can pass any HTML attribute to the <input> tag through the object.
       async authorize(credentials, req) {
         const payload = {
           email: req.body.email,
@@ -62,7 +62,7 @@ export default NextAuth({
         if (!res.ok) {
           throw new Error(user.message);
         }
-        // If no error and we have user data, return it        
+        // If no error and we have user data, return it
         if (res.ok && user) {
           //console.log('1. odpowiedz z logowania', user);
           const tokenPayload = JSON.parse(atob(user.token.split('.')[1]));
@@ -70,11 +70,11 @@ export default NextAuth({
           //console.log(new Date(tokenPayload.exp * 1000))
           return user;
         }
-        // Return null if user data could not be retrieved        
+        // Return null if user data could not be retrieved
         return null;
       },
     }),
-    // ...add more providers here  
+    // ...add more providers here
   ],
   secret: process.env.NEXT_PUBLIC_SECRET,
   pages: {
@@ -88,7 +88,7 @@ export default NextAuth({
       // console.log('user', user);
       // console.log('account', account)
 
-      if(account && user){
+      if (account && user) {
         token.userId = user.id;
         token.user = user.firstName + ' ' + user.lastName;
         token.accessToken = user.token;
@@ -100,13 +100,13 @@ export default NextAuth({
       //const shouldRefreshTime = Date.now()-60000 >= (token.accessTokenExpiry * 1000)
       const tokenPayload = JSON.parse(atob(token.accessToken.split('.')[1]));
       //console.log('data w jwt callbacku', new Date(tokenPayload.exp * 1000));
-      const shouldRefreshToken =  Date.now() > tokenPayload.exp * 1000;
-      if(shouldRefreshToken){
+      const shouldRefreshToken = Date.now() > tokenPayload.exp * 1000;
+      if (shouldRefreshToken) {
         //console.log('call po nowy accessToken');
         token = await refreshAccessToken(token);
         //console.log('refreshAccessToken execution result: ', token);
         return token;
-      }else {
+      } else {
         //console.log('accessToken aktualny');
         return Promise.resolve(token);
       }
@@ -118,18 +118,18 @@ export default NextAuth({
       session.error = token.error;
       session.user.id = token.userId;
       session.user.name = token.user;
-      
+
       const tokenPayload = JSON.parse(atob(token.accessToken.split('.')[1]));
       session.expires = new Date(tokenPayload.exp * 1000);
       //console.log('session after eventual improvements', session);
       return session;
-    }
+    },
   },
   theme: {
-    colorScheme: 'auto', // "auto" | "dark" | "light"    
-    brandColor: '', // Hex color code #33FF5D    
-    logo: '/logo.png', // Absolute URL to image  
+    colorScheme: 'auto', // "auto" | "dark" | "light"
+    brandColor: '', // Hex color code #33FF5D
+    logo: '/logo.png', // Absolute URL to image
   },
-  // Enable debug messages in the console if you are having problems  
+  // Enable debug messages in the console if you are having problems
   debug: process.env.NODE_ENV === 'development',
 });

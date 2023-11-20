@@ -1,6 +1,7 @@
-  // Your Next.js configuration
+// Your Next.js configuration
 module.exports = {
-    transpilePackages: [  '@adobe/react-spectrum',
+  transpilePackages: [
+    '@adobe/react-spectrum',
     '@react-spectrum/actionbar',
     '@react-spectrum/actiongroup',
     '@react-spectrum/avatar',
@@ -50,5 +51,6 @@ module.exports = {
     '@react-spectrum/view',
     '@react-spectrum/well',
     '@spectrum-icons/ui',
-    '@spectrum-icons/workflow'],
+    '@spectrum-icons/workflow',
+  ],
 };
