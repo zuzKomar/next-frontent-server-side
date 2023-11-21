@@ -32,7 +32,7 @@ export default function Cars({ cars }: IndexCarsPageProps) {
   const [noCars, setNoCars] = useState<boolean>(cars.length === 0);
   const { data } = useSession();
 
-  let columns = [
+  const columns = [
     { name: 'Brand', uid: 'brand' },
     { name: 'Model', uid: 'model' },
     { name: 'Prod. year', uid: 'productionYear' },
@@ -85,11 +85,11 @@ export default function Cars({ cars }: IndexCarsPageProps) {
     }
 
     const url = new URL(window.location.href);
-    let pathname = url.pathname.slice(1) + newUrl.slice(0, -1);
+    const pathname = url.pathname.slice(1) + newUrl.slice(0, -1);
 
     if (pathname.length > 5) {
       window.history.pushState({}, null, pathname);
-      let token = data.user ? data.user.accessToken : '';
+      const token = data.user ? data.user.accessToken : '';
 
       await fetch(`http://localhost:3000/${pathname}`, {
         mode: 'cors',
@@ -117,7 +117,7 @@ export default function Cars({ cars }: IndexCarsPageProps) {
 
   async function clearFiltersHandler() {
     window.history.pushState({}, '', 'cars');
-    let token = data.user ? data.user.accessToken : '';
+    const token = data.user ? data.user.accessToken : '';
 
     await fetch(`http://localhost:3000/cars`, {
       mode: 'cors',
@@ -162,7 +162,7 @@ export default function Cars({ cars }: IndexCarsPageProps) {
       {showTableFilters && (
         <View UNSAFE_style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
           <TableFilters
-            useFiltersHanlder={fetchFilteredData}
+            filtersHanlder={fetchFilteredData}
             clearFiltersHandler={clearFiltersHandler}
           />
         </View>

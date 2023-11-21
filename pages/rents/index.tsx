@@ -25,7 +25,7 @@ export default function Rents({ rents }: RentsPageProps) {
   const session = useSession();
   const token = session.data?.user!.accessToken || '';
 
-  let columns = [
+  const columns = [
     { name: 'Car', uid: 'car' },
     { name: 'Date from', uid: 'date' },
     { name: 'Date to', uid: 'dueDate' },
@@ -34,7 +34,7 @@ export default function Rents({ rents }: RentsPageProps) {
     { name: 'Options', uid: 'reportDamage' },
   ];
 
-  let modifiedRents =
+  const modifiedRents =
     rents.length > 0
       ? rents.map(rent => ({
           ...rent,
@@ -48,7 +48,7 @@ export default function Rents({ rents }: RentsPageProps) {
       : [];
 
   function handleDamageReport(rentId: number) {
-    let updateRentDto = {
+    const updateRentDto = {
       damagedCar: true,
     };
 

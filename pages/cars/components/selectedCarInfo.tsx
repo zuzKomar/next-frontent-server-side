@@ -12,7 +12,7 @@ import { useSession } from 'next-auth/react';
 const SelectedCarInfo = ({ data }: CarPageProps) => {
   const [open, setOpen] = useState(false);
 
-  let photoPath = `../static/${data.photo}.png`;
+  const photoPath = `../static/${data.photo}.png`;
 
   const session = useSession();
   const userId = session.data.user.id;
@@ -21,7 +21,7 @@ const SelectedCarInfo = ({ data }: CarPageProps) => {
   function handleCarRental(carId: number, userId: number, date: any, dueDate: any) {
     //check if this car is available this time
     //fetch post -> create new rent
-    let createRentDto = {
+    const createRentDto = {
       userId,
       carId,
       date:
@@ -79,7 +79,7 @@ const SelectedCarInfo = ({ data }: CarPageProps) => {
     //check if there are any rents in selected dates
     let isBooked = false;
     if (data.rents.length > 0) {
-      for (let rent of data.rents) {
+      for (const rent of data.rents) {
         if (
           (new Date(dateFrom) >= new Date(rent.date) &&
             new Date(dateFrom) <= new Date(rent.dueDate)) ||

@@ -13,8 +13,8 @@ type RentModalProps = {
 };
 
 export const days = (date_1: Date, date_2: Date) => {
-  let difference = date_1.getTime() - date_2.getTime();
-  let TotalDays = Math.ceil(difference / (1000 * 3600 * 24));
+  const difference = date_1.getTime() - date_2.getTime();
+  const TotalDays = Math.ceil(difference / (1000 * 3600 * 24));
   return TotalDays;
 };
 
@@ -45,7 +45,7 @@ const RentModal = ({
     setCarAvailable(!checkAvailabilityHandler(carId, date, dueDate));
   }
 
-  let costOfRent = costPerDay * days(new Date(dueDate), new Date(date));
+  const costOfRent = costPerDay * days(new Date(dueDate), new Date(date));
 
   return (
     <AlertDialog

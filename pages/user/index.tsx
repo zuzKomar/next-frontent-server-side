@@ -30,7 +30,7 @@ export default function UserPage({ userData }: UserPageProps) {
   const { data } = useSession();
   const [editMode, setEditMode] = useState(false);
   const [formData, setFormData] = useState(userData);
-  let token = data.user ? data.user.accessToken : '';
+  const token = data.user ? data.user.accessToken : '';
   let loginCredentialsChanged = false;
 
   const {
@@ -42,7 +42,7 @@ export default function UserPage({ userData }: UserPageProps) {
   });
 
   const onSubmit: SubmitHandler<IFormInputs> = async data => {
-    let updateUserDto = {};
+    const updateUserDto = {};
 
     if (data.firstName.length > 0) {
       updateUserDto['firstName'] = data.firstName;

@@ -45,11 +45,11 @@ const schema = yup.object({
 });
 
 type TableFiltersType = {
-  useFiltersHanlder: (filtersData: CarFiltersType) => void;
+  filtersHanlder: (filtersData: CarFiltersType) => void;
   clearFiltersHandler: () => void;
 };
 
-const TableFilters = ({ useFiltersHanlder, clearFiltersHandler }: TableFiltersType) => {
+const TableFilters = ({ filtersHanlder, clearFiltersHandler }: TableFiltersType) => {
   const {
     control,
     handleSubmit,
@@ -78,7 +78,7 @@ const TableFilters = ({ useFiltersHanlder, clearFiltersHandler }: TableFiltersTy
 
   const onSubmit: SubmitHandler<CarFiltersType> = async data => {
     if (isValid) {
-      await useFiltersHanlder(data);
+      await filtersHanlder(data);
     }
   };
 
