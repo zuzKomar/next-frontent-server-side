@@ -8,11 +8,12 @@ import { Text } from '@adobe/react-spectrum';
 import RentModal from './rentModal';
 import { DialogTrigger } from '@adobe/react-spectrum';
 import { useSession } from 'next-auth/react';
+import Image from 'next/image';
 
 const SelectedCarInfo = ({ data }: CarPageProps) => {
   const [open, setOpen] = useState(false);
 
-  const photoPath = `../static/${data.photo}.png`;
+  const photoPath = `public/static/${data.photo}.png`;
 
   const session = useSession();
   const userId = session.data.user.id;
@@ -126,7 +127,7 @@ const SelectedCarInfo = ({ data }: CarPageProps) => {
           />
         </Flex>
         <Flex direction="column" marginTop="20px">
-          <img src={photoPath} alt="car photo" width="240px" />
+          <Image src={photoPath} alt="car photo" width="240" />
           <DialogTrigger type="modal">
             <Button variant="primary" marginTop="20px" onPress={() => setOpen(true)}>
               <Car />
