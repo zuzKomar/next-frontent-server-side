@@ -91,7 +91,7 @@ export default function Cars({ cars }: IndexCarsPageProps) {
       window.history.pushState({}, null, pathname);
       const token = data.user ? data.user.accessToken : '';
 
-      await fetch(`http://localhost:3000/${pathname}`, {
+      await fetch(`${process.env.NEST_URL}${pathname}`, {
         mode: 'cors',
         headers: {
           'Content-Type': 'application/json',
@@ -119,7 +119,7 @@ export default function Cars({ cars }: IndexCarsPageProps) {
     window.history.pushState({}, '', 'cars');
     const token = data.user ? data.user.accessToken : '';
 
-    await fetch(`http://localhost:3000/cars`, {
+    await fetch(`${process.env.NEST_URL}cars`, {
       mode: 'cors',
       headers: {
         'Content-Type': 'application/json',

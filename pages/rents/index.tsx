@@ -52,7 +52,7 @@ export default function Rents({ rents }: RentsPageProps) {
       damagedCar: true,
     };
 
-    fetch(`http://localhost:3000/rents/${rentId}`, {
+    fetch(`${process.env.NEST_URL}rents/${rentId}`, {
       method: 'PATCH',
       body: JSON.stringify(updateRentDto),
       mode: 'cors',

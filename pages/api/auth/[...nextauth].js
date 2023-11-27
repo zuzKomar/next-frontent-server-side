@@ -2,9 +2,7 @@ import NextAuth from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 
 async function refreshAccessToken(tokenObject) {
-  //console.log('param', tokenObject)
   try {
-    console.log(process.env.NEST_URL);
     // Get a new set of tokens with a refreshToken
     const tokenResponse = await fetch(`${process.env.NEST_URL}auth/refresh`, {
       method: 'GET',
@@ -15,7 +13,6 @@ async function refreshAccessToken(tokenObject) {
     });
 
     const result = await tokenResponse.json();
-    //console.log('token responseResult', result);
 
     return {
       ...tokenObject,
@@ -64,10 +61,6 @@ export default NextAuth({
         }
         // If no error and we have user data, return it
         if (res.ok && user) {
-          //console.log('1. odpowiedz z logowania', user);
-          const tokenPayload = JSON.parse(atob(user.token.split('.')[1]));
-          const isExpited = Date.now() > tokenPayload.exp * 1000;
-          //console.log(new Date(tokenPayload.exp * 1000))
           return user;
         }
         // Return null if user data could not be retrieved

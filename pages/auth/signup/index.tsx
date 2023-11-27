@@ -74,7 +74,7 @@ export default function Signup() {
     };
 
     //in the end send post request add user role to dto
-    fetch('http://localhost:3000/auth/signup', {
+    fetch(`${process.env.NEST_URL}/auth/signup`, {
       method: 'POST',
       body: JSON.stringify(createUserDto),
       mode: 'cors',
