@@ -105,24 +105,32 @@ const SelectedCarInfo = ({ data }: CarPageProps) => {
     <View UNSAFE_style={{ backgroundColor: 'rgba(0,0,0,0.5)' }} width="70%">
       <Flex direction="row" justifyContent="space-evenly">
         <Flex direction="column" gap="size-150" wrap>
-          <TextField label="Brand" defaultValue={data.brand} isDisabled={true} />
-          <TextField label="Model" defaultValue={data.model} isDisabled={true} />
+          <TextField label="Brand" defaultValue={data.brand ? data.brand : ''} isDisabled={true} />
+          <TextField label="Model" defaultValue={data.model ? data.model : ''} isDisabled={true} />
           <TextField
             label="Production year"
             defaultValue={data.productionYear + ''}
             isDisabled={true}
           />
-          <TextField label="Power" defaultValue={data.power + ''} isDisabled={true} />
-          <TextField label="Capacity" defaultValue={data.capacity + ''} isDisabled={true} />
+          <TextField
+            label="Power"
+            defaultValue={data.power ? data.power + '' : ''}
+            isDisabled={true}
+          />
+          <TextField
+            label="Capacity"
+            defaultValue={data.capacity ? data.capacity + '' : ''}
+            isDisabled={true}
+          />
           <TextField
             label="Number of seats"
-            defaultValue={data.numberOfSeats + ''}
+            defaultValue={data.numberOfSeats ? data.numberOfSeats + '' : ''}
             isDisabled={true}
           />
           <TextField label="Transmission" defaultValue={data.transmission} isDisabled={true} />
           <TextField
             label="Cost of rent per day"
-            defaultValue={data.costPerDay + ''}
+            defaultValue={data.costPerDay ? data.costPerDay + '' : ''}
             isDisabled={true}
           />
         </Flex>
@@ -134,9 +142,9 @@ const SelectedCarInfo = ({ data }: CarPageProps) => {
               <Text>Rent me!</Text>
             </Button>
             <RentModal
-              carId={data.id}
+              carId={data.id ? data.id : 0}
               userId={parseInt(userId)}
-              costPerDay={data.costPerDay}
+              costPerDay={data.costPerDay ? data.costPerDay : 0}
               closeHandler={setOpen}
               confirmHandler={handleCarRental}
               checkAvailabilityHandler={handleCarAvailabilityCheck}
