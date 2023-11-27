@@ -16,8 +16,8 @@ const SelectedCarInfo = ({ data }: CarPageProps) => {
   const photoPath = `public/static/${data ? data.photo : ''}.png`;
 
   const session = useSession();
-  const userId = session.data.user.id;
-  const token = session.data.user.accessToken;
+  const userId = session.data ? session.data.user.id : '';
+  const token = session.data ? session.data.user.accessToken : '';
 
   function handleCarRental(carId: number, userId: number, date: any, dueDate: any) {
     //check if this car is available this time
