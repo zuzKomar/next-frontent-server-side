@@ -1,4 +1,4 @@
-import { GetServerSidePropsContext } from 'next';
+import { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import {
   View,
   Button,
@@ -14,7 +14,7 @@ import {
 import { PageContainer } from '../../components/PageContainer';
 import { useRouter } from 'next/router';
 import { getSession, useSession } from 'next-auth/react';
-import { Session } from 'next-auth';
+import { Session, unstable_getServerSession } from 'next-auth';
 import { useState } from 'react';
 import TableFilters from './components/tableFilters';
 import { Car } from '../../types/Car';
@@ -196,11 +196,12 @@ export default function Cars({ cars }: IndexCarsPageProps) {
   );
 }
 
-export async function getServerSideProps(context: GetServerSidePropsContext) {
+export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   try {
-    const session: Session | null = await getSession({ req: context.req });
+    const session: Session = await unstable_getServerSession(req, res, {});
+    const user = session?.user;
 
-    if (!session) {
+    if (!user) {
       return {
         redirect: {
           destination: '/auth/signin',
@@ -208,8 +209,9 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         },
       };
     } else {
-      const token = session!.user!.accessToken || '';
-      const cars = await getCars(token!);
+      console.log(user);
+      const token = user.accessToken || '';
+      const cars = await getCars(token);
 
       return {
         props: {
@@ -220,7 +222,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   } catch (err) {
     console.log(err);
   }
-}
+};
 
 export async function getCars(token: string) {
   const response = await fetch(`${process.env.NEST_URL}cars`, {
