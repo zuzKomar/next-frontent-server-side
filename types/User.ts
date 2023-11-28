@@ -4,6 +4,7 @@ export type User = {
   lastName: string;
   phone: string;
   email: string;
+  token: string;
   refreshToken: string;
   rents: any[];
 };

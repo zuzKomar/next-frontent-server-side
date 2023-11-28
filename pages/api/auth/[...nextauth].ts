@@ -1,5 +1,6 @@
 import NextAuth from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
+import { User } from '../../../types/User';
 
 async function refreshAccessToken(tokenObject) {
   try {
@@ -75,18 +76,21 @@ export default NextAuth({
   },
   callbacks: {
     async jwt({ token, user, account }) {
+      let user2: User;
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      user2 = { ...user };
       //user is defined during login ONLY
       // console.log('jwt callback: ')
       // console.log('token', token);
       // console.log('user', user);
       // console.log('account', account)
 
-      if (account && user) {
-        token.userId = user.id;
-        token.user = user.firstName + ' ' + user.lastName;
-        token.accessToken = user.token;
+      if (account && user2) {
+        token.userId = user2.id;
+        token.user = user2.firstName + ' ' + user2.lastName;
+        token.accessToken = user2.token;
         token.accessTokenExpiry = token.exp;
-        token.refreshToken = user.refreshToken;
+        token.refreshToken = user2.refreshToken;
       }
       //Math.round((1676926364 - 900000)-Date.now())
       //const shouldRefreshTime = Math.round((token.accessTokenExpiry - 900000) - Date.now());
@@ -104,8 +108,8 @@ export default NextAuth({
         return Promise.resolve(token);
       }
     },
-    async session({ session, token, user }) {
-      //console.log('token in session callback', token);
+    async session({ session, token }) {
+      console.log(session);
       session.user.accessToken = token.accessToken;
       session.user.refreshToken = token.refreshToken;
       session.error = token.error;

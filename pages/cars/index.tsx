@@ -1,4 +1,4 @@
-import { GetServerSideProps, GetServerSidePropsContext } from 'next';
+import { GetServerSideProps } from 'next';
 import {
   View,
   Button,
@@ -13,7 +13,7 @@ import {
 } from '@adobe/react-spectrum';
 import { PageContainer } from '../../components/PageContainer';
 import { useRouter } from 'next/router';
-import { getSession, useSession } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
 import { Session, unstable_getServerSession } from 'next-auth';
 import { useState } from 'react';
 import TableFilters from './components/tableFilters';
