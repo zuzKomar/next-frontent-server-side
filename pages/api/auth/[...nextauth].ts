@@ -6,7 +6,7 @@ import { JWT } from 'next-auth/jwt';
 async function refreshAccessToken(tokenObject) {
   try {
     // Get a new set of tokens with a refreshToken
-    const tokenResponse = await fetch(`${process.env.NEST_URL}auth/refresh`, {
+    const tokenResponse = await fetch(`${process.env.VERCEL_URL}auth/refresh`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
