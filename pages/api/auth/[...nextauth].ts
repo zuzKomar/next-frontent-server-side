@@ -1,6 +1,7 @@
 import NextAuth from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { User } from '../../../types/User';
+import { JWT } from 'next-auth/jwt';
 
 async function refreshAccessToken(tokenObject) {
   try {
@@ -76,9 +77,9 @@ export default NextAuth({
   },
   callbacks: {
     async jwt({ token, user, account }) {
-      let user2: User;
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      user2 = { ...user };
+      const user2: User = user;
+      const token2: JWT = token;
+
       //user is defined during login ONLY
       // console.log('jwt callback: ')
       // console.log('token', token);
@@ -86,16 +87,17 @@ export default NextAuth({
       // console.log('account', account)
 
       if (account && user2) {
-        token.userId = user2.id;
-        token.user = user2.firstName + ' ' + user2.lastName;
-        token.accessToken = user2.token;
-        token.accessTokenExpiry = token.exp;
-        token.refreshToken = user2.refreshToken;
+        token2.userId = user2.id;
+        token2.user = user2.firstName + ' ' + user2.lastName;
+        token2.accessToken = user2.token;
+        token2.accessTokenExpiry = token.exp;
+        token2.refreshToken = user2.refreshToken;
       }
       //Math.round((1676926364 - 900000)-Date.now())
       //const shouldRefreshTime = Math.round((token.accessTokenExpiry - 900000) - Date.now());
       //const shouldRefreshTime = Date.now()-60000 >= (token.accessTokenExpiry * 1000)
-      const tokenPayload = JSON.parse(atob(token.accessToken.split('.')[1]));
+      const accessTokenk = <string>token2.accessToken;
+      const tokenPayload = JSON.parse(atob(accessTokenk));
       //console.log('data w jwt callbacku', new Date(tokenPayload.exp * 1000));
       const shouldRefreshToken = Date.now() > tokenPayload.exp * 1000;
       if (shouldRefreshToken) {
@@ -110,13 +112,19 @@ export default NextAuth({
     },
     async session({ session, token }) {
       console.log(session);
-      session.user.accessToken = token.accessToken;
-      session.user.refreshToken = token.refreshToken;
-      session.error = token.error;
-      session.user.id = token.userId;
-      session.user.name = token.user;
+      const tokenn = <string>token.accessToken;
+      const refTokenn = <string>token.refreshToken;
+      const tokenError = <string>token.error;
+      const tokenUserId = <string>token.userId;
+      const tokenUser = <string>token.user;
 
-      const tokenPayload = JSON.parse(atob(token.accessToken.split('.')[1]));
+      session.user.accessToken = tokenn;
+      session.user.refreshToken = refTokenn;
+      session.error = tokenError;
+      session.user.id = tokenUserId;
+      session.user.name = tokenUser;
+
+      const tokenPayload = JSON.parse(atob(tokenn.split('.')[1]));
       session.expires = new Date(tokenPayload.exp * 1000);
       //console.log('session after eventual improvements', session);
       return session;
