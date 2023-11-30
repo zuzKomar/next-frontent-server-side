@@ -6,7 +6,7 @@ import { JWT } from 'next-auth/jwt';
 async function refreshAccessToken(tokenObject) {
   try {
     // Get a new set of tokens with a refreshToken
-    const tokenResponse = await fetch(`${process.env.VERCEL_URL}auth/refresh`, {
+    const tokenResponse = await fetch(`${process.env.NEST_URL}auth/refresh`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -136,5 +136,5 @@ export default NextAuth({
     logo: '/logo.png', // Absolute URL to image
   },
   // Enable debug messages in the console if you are having problems
-  debug: process.env.NODE_ENV === 'development',
+  debug: process.env.NODE_ENV === 'production',
 });
