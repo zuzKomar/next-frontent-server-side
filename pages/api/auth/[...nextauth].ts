@@ -48,7 +48,7 @@ export default NextAuth({
           email: req.body.email,
           password: req.body.password,
         };
-
+        console.log('from nextAuth authorize func...');
         console.log(payload);
 
         const res = await fetch(`${process.env.NEST_URL}auth/login`, {
