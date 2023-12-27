@@ -37,12 +37,12 @@ export default NextAuth({
   },
   // Enable debug messages in the console if you are having problems
   debug: true,
-  session: {
-    strategy: 'jwt',
-  },
-  jwt: {
-    secret: 'secret',
-  },
+  // session: {
+  //   strategy: 'jwt',
+  // },
+  // jwt: {
+  //   secret: 'secret',
+  // },
   providers: [
     CredentialsProvider({
       // The name to display on the sign in form (e.g. 'Sign in with...')
