@@ -58,33 +58,26 @@ export default NextAuth({
       // e.g. domain, username, password, 2FA token, etc.
       // You can pass any HTML attribute to the <input> tag through the object.
       async authorize(credentials, req) {
-        const payload = {
-          email: req.body.email,
-          password: req.body.password,
-        };
-        console.log('from nextAuth authorize func...');
-        console.log(credentials);
+        if (!credentials.email || !credentials.password) return null;
+        const { email, password } = credentials;
 
         const res = await fetch(`${process.env.NEST_URL}auth/login`, {
           method: 'POST',
-          body: JSON.stringify(payload),
+          body: JSON.stringify({ email, password }),
           mode: 'cors',
           credentials: 'include',
           headers: {
             'Content-Type': 'application/json',
           },
         });
-        const user = await res.json();
+        if (res.status === 401) {
+          console.log(res.statusText);
 
-        if (!res.ok) {
-          throw new Error(user.message);
+          return null;
         }
-        // If no error and we have user data, return it
-        if (res.ok && user) {
-          return user;
-        }
-        // Return null if user data could not be retrieved
-        return null;
+
+        const user = await res.json();
+        return user;
       },
     }),
     // ...add more providers here
@@ -95,7 +88,7 @@ export default NextAuth({
   },
   callbacks: {
     async jwt({ token, user, account }) {
-      const user2: User = user;
+      const user2: any = user;
       const token2: JWT = token;
 
       //user is defined during login ONLY
@@ -105,8 +98,7 @@ export default NextAuth({
       // console.log('account', account)
 
       if (account && user2) {
-        token2.userId = user2.id;
-        token2.user = user2.firstName + ' ' + user2.lastName;
+        token2.user = user2;
         token2.accessToken = user2.token;
         token2.accessTokenExpiry = token.exp;
         token2.refreshToken = user2.refreshToken;
@@ -130,19 +122,15 @@ export default NextAuth({
     },
     async session({ session, token }) {
       console.log(session);
-      const tokenn = <string>token.accessToken;
-      const refTokenn = <string>token.refreshToken;
-      const tokenError = <string>token.error;
-      const tokenUserId = <string>token.userId;
-      const tokenUser = <string>token.user;
+      const tokenUser = token.user;
+      const tokenError = token.error;
+      const tokenExpires = token.expires;
 
-      session.user.accessToken = tokenn;
-      session.user.refreshToken = refTokenn;
+      session.user = tokenUser;
       session.error = tokenError;
-      session.user.id = tokenUserId;
-      session.user.name = tokenUser;
+      session.expires = tokenExpires;
 
-      const tokenPayload = JSON.parse(atob(tokenn.split('.')[1]));
+      const tokenPayload = JSON.parse(atob(tokenUser.token.split('.')[1]));
       session.expires = new Date(tokenPayload.exp * 1000);
       //console.log('session after eventual improvements', session);
       return session;

@@ -1,3 +1,4 @@
+'use client';
 import { Button, Form, View } from '@adobe/react-spectrum';
 import { PageContainer } from '../../../components/PageContainer';
 import { useRouter } from 'next/router';

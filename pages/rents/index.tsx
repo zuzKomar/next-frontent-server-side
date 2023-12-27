@@ -15,15 +15,17 @@ import { useRouter } from 'next/router';
 import { getSession, useSession } from 'next-auth/react';
 import { Rent } from '../../types/Rent';
 import IndexPage from '../Head';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '../api/auth/[...nextauth]/route';
 
 type RentsPageProps = {
   rents: Rent[];
 };
 
-export default function Rents({ rents }: RentsPageProps) {
+export default async function Rents({ rents }: RentsPageProps) {
   const router = useRouter();
-  const session = useSession();
-  const token = session.data?.user!.accessToken || '';
+  const session = await getServerSession(authOptions);
+  const token = session.user.token || '';
 
   const columns = [
     { name: 'Car', uid: 'car' },
@@ -126,8 +128,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         },
       };
     } else {
-      const token = session!.user!.accessToken || '';
-      const rents = await getUserRents(token, session.user.email);
+      const token = session!.user!.token || '';
+      const rents = await getUserRents(token, session.user.firstName);
       return { props: { rents: rents } };
     }
   } catch (err) {

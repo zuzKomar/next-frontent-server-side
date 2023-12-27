@@ -11,6 +11,8 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useRouter } from 'next/router';
 import IndexPage from '../Head';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '../api/auth/[...nextauth]/route';
 
 interface UserPageProps {
   userData: User;
@@ -30,7 +32,7 @@ export default function UserPage({ userData }: UserPageProps) {
   const { data } = useSession();
   const [editMode, setEditMode] = useState(false);
   const [formData, setFormData] = useState(userData);
-  const token = data.user ? data.user.accessToken : '';
+  const token = data.user ? data.user.token : '';
   let loginCredentialsChanged = false;
 
   const {
@@ -217,7 +219,7 @@ export default function UserPage({ userData }: UserPageProps) {
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   try {
-    const session = await getSession({ req: context.req });
+    const session = await getServerSession(authOptions);
 
     if (!session) {
       return {
@@ -227,8 +229,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         },
       };
     } else {
-      const token = session!.user!.accessToken || '';
-      const user = await getUser(token, session.user.email);
+      const token = session!.user!.token || '';
+      const user = await getUser(token, session.user.firstName);
       return { props: { userData: user } };
     }
   } catch (err) {

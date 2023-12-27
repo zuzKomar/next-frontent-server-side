@@ -14,12 +14,13 @@ import {
 import { PageContainer } from '../../components/PageContainer';
 import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
-import { Session, unstable_getServerSession } from 'next-auth';
+import { Session, getServerSession, unstable_getServerSession } from 'next-auth';
 import { useState } from 'react';
 import TableFilters from './components/tableFilters';
 import { Car } from '../../types/Car';
 import { CarFiltersType } from '../../types/UserForm';
 import IndexPage from '../Head';
+import { authOptions } from '../api/auth/[...nextauth]/route';
 
 interface IndexCarsPageProps {
   cars: Car[];
@@ -89,7 +90,7 @@ export default function Cars({ cars }: IndexCarsPageProps) {
 
     if (pathname.length > 5) {
       window.history.pushState({}, null, pathname);
-      const token = data.user ? data.user.accessToken : '';
+      const token = data.user ? data.user.token : '';
 
       await fetch(`${process.env.NEST_URL}${pathname}`, {
         mode: 'cors',
@@ -117,7 +118,7 @@ export default function Cars({ cars }: IndexCarsPageProps) {
 
   async function clearFiltersHandler() {
     window.history.pushState({}, '', 'cars');
-    const token = data.user ? data.user.accessToken : '';
+    const token = data.user ? data.user.token : '';
 
     await fetch(`${process.env.NEST_URL}cars`, {
       mode: 'cors',
@@ -198,7 +199,7 @@ export default function Cars({ cars }: IndexCarsPageProps) {
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   try {
-    const session: Session = await unstable_getServerSession(req, res, {});
+    const session: Session = await getServerSession(authOptions);
     const user = session?.user;
 
     if (!user) {
@@ -210,7 +211,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
       };
     } else {
       console.log(user);
-      const token = user.accessToken || '';
+      const token = user.token || '';
       const cars = await getCars(token);
 
       return {

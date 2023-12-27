@@ -1,10 +1,10 @@
 import { PageContainer } from '../../components/PageContainer';
 import { GetServerSidePropsContext } from 'next';
 import SelectedCarInfo from './components/selectedCarInfo';
-import { getSession } from 'next-auth/react';
-import { Session } from 'next-auth';
+import { Session, getServerSession } from 'next-auth';
 import IndexPage from '../Head';
 import { Car } from '../../types/Car';
+import { authOptions } from '../api/auth/[...nextauth]/route';
 
 export interface CarPageProps {
   data: Car;
@@ -21,7 +21,7 @@ export default function CarPage({ data }: CarPageProps) {
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   try {
-    const session: Session | null = await getSession({ req: context.req });
+    const session: Session | null = await getServerSession(authOptions);
 
     if (!session) {
       return {
@@ -32,7 +32,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       };
     } else {
       const { user } = session;
-      const token = user?.accessToken || '';
+      const token = user?.token || '';
       const car = await getCar(context.params!.id[0], token!);
 
       return {

@@ -1,15 +1,17 @@
 import { Flex, Item, TabList, Tabs } from '@adobe/react-spectrum';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { signOut, useSession } from 'next-auth/react';
+import { signOut } from 'next-auth/react';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '../pages/api/auth/[...nextauth]/route';
 
-export const Navbar = () => {
+export const Navbar = async () => {
   const router = useRouter();
   const currentPath = router.pathname.split('/')[1];
-  const { data: session } = useSession();
+  const session = await getServerSession(authOptions);
   return (
     <Flex justifyContent="center" direction="column">
-      {session && <h2>{`Logged as ${session?.user.name}`}</h2>}
+      {session && <h2>{`Logged as ${session.user.firstName + session.user.lastName}`}</h2>}
       <Flex direction="row" justifyContent="center">
         <Tabs aria-label="navigation" density="compact" selectedKey={currentPath}>
           <TabList>
@@ -29,7 +31,9 @@ export const Navbar = () => {
         </Tabs>
         <>
           {session ? (
-            <button onClick={() => signOut({ callbackUrl: 'http://localhost:3001/auth/signin' })}>
+            <button
+              onClick={() => signOut({ callbackUrl: `${process.env.NEXTAUTH_URL}/auth/signin` })}
+            >
               Sign out
             </button>
           ) : (
