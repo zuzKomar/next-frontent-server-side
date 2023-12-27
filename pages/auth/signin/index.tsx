@@ -28,30 +28,32 @@ export default function Signin() {
     resolver: yupResolver(schema),
   });
 
-  const onSubmit: SubmitHandler<ILoginFormInputs> = async (data, e) => {
+  const onSubmit: SubmitHandler<ILoginFormInputs> = async data => {
     console.log('onSubmit Signin index file');
     console.log(data);
-    e.preventDefault();
-    try {
-      const res = await signIn('credentials', {
-        redirect: false,
-        email: data.email,
-        password: data.password,
-        callbackUrl: '/',
+
+    fetch(`${process.env.NEST_URL}/auth/login`, {
+      method: 'POST',
+      body: JSON.stringify(data),
+      mode: 'cors',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(res => res.json())
+      .then(() => {
+        signIn('credentials', {
+          redirect: false,
+          email: data.email,
+          password: data.password,
+          callbackUrl: '/',
+        });
+      })
+      .catch(err => {
+        console.error(err);
       });
-
-      console.log(res);
-
-      if (res.error) {
-        throw new Error(res.error);
-      } else {
-        router.push(`/`);
-      }
-    } catch (err) {
-      console.log(err);
-    }
   };
-
   function redirectToSignupPage() {
     router.push(`/auth/signup`);
   }
