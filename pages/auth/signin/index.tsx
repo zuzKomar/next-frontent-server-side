@@ -32,17 +32,23 @@ export default function Signin() {
     console.log('onSubmit Signin index file');
     console.log(data);
     e.preventDefault();
-    const res = await signIn('credentials', {
-      redirect: false,
-      email: data.email,
-      password: data.password,
-      callbackUrl: '/',
-    });
+    try {
+      const res = await signIn('credentials', {
+        redirect: false,
+        email: data.email,
+        password: data.password,
+        callbackUrl: '/',
+      });
 
-    if (res.error) {
-      console.log(res.error);
-    } else {
-      router.push(`/`);
+      console.log(res);
+
+      if (res.error) {
+        throw new Error(res.error);
+      } else {
+        router.push(`/`);
+      }
+    } catch (err) {
+      console.log(err);
     }
   };
 
