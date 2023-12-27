@@ -17,7 +17,7 @@ const SelectedCarInfo = ({ data }: CarPageProps) => {
 
   const session = useSession();
   const userId = session.data ? session.data.user.id : '';
-  const token = session.data ? session.data.user.accessToken : '';
+  const token = session.data ? session.data.user.token : '';
 
   function handleCarRental(carId: number, userId: number, date: any, dueDate: any) {
     //check if this car is available this time
@@ -143,7 +143,7 @@ const SelectedCarInfo = ({ data }: CarPageProps) => {
             </Button>
             <RentModal
               carId={data ? data.id : 0}
-              userId={parseInt(userId)}
+              userId={userId || 0}
               costPerDay={data ? data.costPerDay : 0}
               closeHandler={setOpen}
               confirmHandler={handleCarRental}
