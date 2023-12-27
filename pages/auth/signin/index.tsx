@@ -28,7 +28,8 @@ export default function Signin() {
     resolver: yupResolver(schema),
   });
 
-  const onSubmit: SubmitHandler<ILoginFormInputs> = async data => {
+  const onSubmit: SubmitHandler<ILoginFormInputs> = async (data, e) => {
+    e.preventDefault();
     console.log('onSubmit Signin index file');
     console.log(data);
 

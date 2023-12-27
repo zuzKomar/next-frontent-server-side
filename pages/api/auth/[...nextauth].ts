@@ -37,16 +37,17 @@ export default NextAuth({
   },
   // Enable debug messages in the console if you are having problems
   debug: true,
-  // session: {
-  //   strategy: 'jwt',
-  // },
-  // jwt: {
-  //   secret: 'secret',
-  // },
+  session: {
+    strategy: 'jwt',
+  },
+  jwt: {
+    secret: process.env.NEXTAUTH_SECRET,
+  },
   providers: [
     CredentialsProvider({
       // The name to display on the sign in form (e.g. 'Sign in with...')
-      id: 'ecredentials',
+      id: 'credentials',
+      type: 'credentials',
       name: 'Credentials',
       credentials: {
         email: { label: 'email', type: 'email' },
