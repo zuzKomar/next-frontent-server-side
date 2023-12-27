@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { GetServerSidePropsContext } from 'next';
-import { getSession, signOut, useSession } from 'next-auth/react';
+import { signOut, useSession } from 'next-auth/react';
 import { PageContainer } from '../../components/PageContainer';
 import { User } from '../../types/User';
 import * as yup from 'yup';
@@ -28,7 +28,6 @@ const schema = yup.object({
 });
 
 export default function UserPage({ userData }: UserPageProps) {
-  const router = useRouter();
   const { data } = useSession();
   const [editMode, setEditMode] = useState(false);
   const [formData, setFormData] = useState(userData);

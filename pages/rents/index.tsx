@@ -12,7 +12,7 @@ import {
 import { GetServerSidePropsContext } from 'next';
 import { days } from '../cars/components/rentModal';
 import { useRouter } from 'next/router';
-import { getSession, useSession } from 'next-auth/react';
+import { getSession } from 'next-auth/react';
 import { Rent } from '../../types/Rent';
 import IndexPage from '../Head';
 import { getServerSession } from 'next-auth';
