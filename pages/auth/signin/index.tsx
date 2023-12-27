@@ -33,7 +33,7 @@ export default function Signin() {
     console.log('onSubmit Signin index file');
     console.log(data);
 
-    fetch(`${process.env.NEST_URL}auth/login`, {
+    fetch(`https://rent-a-car-backend-f130520aafb5.herokuapp.com/auth/login`, {
       method: 'POST',
       body: JSON.stringify(data),
       mode: 'cors',
