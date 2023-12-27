@@ -30,11 +30,24 @@ async function refreshAccessToken(tokenObject) {
 }
 
 export default NextAuth({
+  theme: {
+    colorScheme: 'auto', // "auto" | "dark" | "light"
+    brandColor: '', // Hex color code #33FF5D
+    logo: '/logo.png', // Absolute URL to image
+  },
+  // Enable debug messages in the console if you are having problems
+  debug: true,
+  session: {
+    strategy: 'jwt',
+  },
+  jwt: {
+    secret: 'secret',
+  },
   providers: [
     CredentialsProvider({
       // The name to display on the sign in form (e.g. 'Sign in with...')
-      id: 'credentials',
-      name: 'my-project',
+      id: 'email-login',
+      name: 'Credentials',
       credentials: {
         email: { label: 'email', type: 'email' },
         password: { label: 'Password', type: 'password' },
@@ -49,7 +62,7 @@ export default NextAuth({
           password: req.body.password,
         };
         console.log('from nextAuth authorize func...');
-        console.log(payload);
+        console.log(credentials);
 
         const res = await fetch(`${process.env.NEST_URL}auth/login`, {
           method: 'POST',
@@ -73,7 +86,7 @@ export default NextAuth({
     }),
     // ...add more providers here
   ],
-  secret: process.env.NEXT_PUBLIC_SECRET,
+  secret: process.env.NEXTAUTH_SECRET,
   pages: {
     signIn: '/auth/signin',
   },
@@ -132,11 +145,4 @@ export default NextAuth({
       return session;
     },
   },
-  theme: {
-    colorScheme: 'auto', // "auto" | "dark" | "light"
-    brandColor: '', // Hex color code #33FF5D
-    logo: '/logo.png', // Absolute URL to image
-  },
-  // Enable debug messages in the console if you are having problems
-  debug: process.env.NODE_ENV === 'production',
 });
