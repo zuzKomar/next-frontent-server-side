@@ -12,7 +12,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useRouter } from 'next/router';
 import IndexPage from '../Head';
 import { getServerSession } from 'next-auth';
-import { authOptions } from '../api/auth/[...nextauth]/route';
+import { authOptions } from '../api/auth/[...nextauth]';
 
 interface UserPageProps {
   userData: User;
