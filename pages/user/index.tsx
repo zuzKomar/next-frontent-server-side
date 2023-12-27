@@ -27,8 +27,8 @@ const schema = yup.object({
   confirmPassword: yup.string().oneOf([yup.ref('password'), '']),
 });
 
-export default function UserPage({ userData }: UserPageProps) {
-  const { data } = useSession();
+export default async function UserPage({ userData }: UserPageProps) {
+  const data = await getServerSession(authOptions);
   const [editMode, setEditMode] = useState(false);
   const [formData, setFormData] = useState(userData);
   const token = data.user ? data.user.token : '';

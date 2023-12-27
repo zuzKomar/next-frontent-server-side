@@ -26,12 +26,12 @@ interface IndexCarsPageProps {
   cars: Car[];
 }
 
-export default function Cars({ cars }: IndexCarsPageProps) {
+export default async function Cars({ cars }: IndexCarsPageProps) {
   const router = useRouter();
   const [showTableFilters, setShowTableFilters] = useState(false);
   const [carData, setCarData] = useState<any[]>([...cars]);
   const [noCars, setNoCars] = useState<boolean>(cars.length === 0);
-  const { data } = useSession();
+  const data = await getServerSession(authOptions);
 
   const columns = [
     { name: 'Brand', uid: 'brand' },
@@ -90,7 +90,7 @@ export default function Cars({ cars }: IndexCarsPageProps) {
 
     if (pathname.length > 5) {
       window.history.pushState({}, null, pathname);
-      const token = data.user ? data.user.token : '';
+      const token = data ? data.user.token : '';
 
       await fetch(`${process.env.NEST_URL}${pathname}`, {
         mode: 'cors',
