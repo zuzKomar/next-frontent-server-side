@@ -1,14 +1,12 @@
 import { Flex, Item, TabList, Tabs } from '@adobe/react-spectrum';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { signOut } from 'next-auth/react';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '../pages/api/auth/[...nextauth]/route';
+import { signOut, useSession } from 'next-auth/react';
 
-export const Navbar = async () => {
+export const Navbar = () => {
   const router = useRouter();
   const currentPath = router.pathname.split('/')[1];
-  const session = await getServerSession(authOptions);
+  const { data: session } = useSession();
   return (
     <Flex justifyContent="center" direction="column">
       {session && <h2>{`Logged as ${session.user.firstName + session.user.lastName}`}</h2>}
