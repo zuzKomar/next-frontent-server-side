@@ -68,6 +68,8 @@ export default NextAuth({
         const res = await fetch(`${process.env.NEST_URL}auth/login`, {
           method: 'POST',
           body: JSON.stringify(payload),
+          mode: 'cors',
+          credentials: 'include',
           headers: {
             'Content-Type': 'application/json',
           },
