@@ -30,7 +30,7 @@ export const Navbar = () => {
         <>
           {session ? (
             <button
-              onClick={() => signOut({ callbackUrl: `${process.env.NEXTAUTH_URL}/auth/signin` })}
+              onClick={() => signOut({ callbackUrl: `${process.env.NEXTAUTH_URL}auth/signin` })}
             >
               Sign out
             </button>
