@@ -8,7 +8,6 @@ async function refreshAccessToken(tokenObject) {
     // Get a new set of tokens with a refreshToken
     const tokenResponse = await fetch(`${process.env.NEST_URL}/auth/refresh`, {
       method: 'GET',
-      mode: 'cors',
       headers: {
         'Content-Type': 'application/json',
         Authorization: 'Bearer ' + tokenObject.refreshToken,
@@ -43,21 +42,20 @@ const authOptions: NextAuthOptions = {
   },
   providers: [
     CredentialsProvider({
-      id: 'credentials',
-      type: 'credentials',
       name: 'Credentials',
       credentials: {
         email: { label: 'email', type: 'email' },
         password: { label: 'Password', type: 'password' },
       },
-      async authorize(credentials, req) {
+      async authorize(credentials) {
+        console.log('dupa');
         if (!credentials.email || !credentials.password) return null;
         const { email, password } = credentials;
         const res = await fetch(`${process.env.NEST_URL}/auth/login`, {
           method: 'POST',
           body: JSON.stringify({ email, password }),
-          mode: 'cors',
-          credentials: 'include',
+          // mode: 'cors',
+          // credentials: 'include',
           headers: {
             'Content-Type': 'application/json',
           },
@@ -132,5 +130,5 @@ const authOptions: NextAuthOptions = {
 
 const handler = NextAuth(authOptions);
 
-export default authOptions;
-export { handler as GET, handler as POST };
+// export default authOptions;
+export { handler as GET, handler as POST, handler as PATCH };
