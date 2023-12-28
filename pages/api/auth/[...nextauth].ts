@@ -30,7 +30,7 @@ async function refreshAccessToken(tokenObject) {
   }
 }
 
-export const authOptions: NextAuthOptions = {
+const authOptions: NextAuthOptions = {
   theme: {
     colorScheme: 'auto', // "auto" | "dark" | "light"
     brandColor: '', // Hex color code #33FF5D
@@ -132,4 +132,5 @@ export const authOptions: NextAuthOptions = {
 
 const handler = NextAuth(authOptions);
 
+export default authOptions;
 export { handler as GET, handler as POST };

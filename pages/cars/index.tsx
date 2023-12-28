@@ -20,7 +20,7 @@ import TableFilters from './components/tableFilters';
 import { Car } from '../../types/Car';
 import { CarFiltersType } from '../../types/UserForm';
 import IndexPage from '../Head';
-import { authOptions } from '../api/auth/[...nextauth]';
+import authOptions from '../api/auth/[...nextauth]';
 
 interface IndexCarsPageProps {
   cars: Car[];
