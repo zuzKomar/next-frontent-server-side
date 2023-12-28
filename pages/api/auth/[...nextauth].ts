@@ -2,6 +2,7 @@ import CredentialsProvider from 'next-auth/providers/credentials';
 import NextAuth from 'next-auth/next';
 import { NextAuthOptions } from 'next-auth';
 import { JWT } from 'next-auth/jwt';
+import { signIn } from 'next-auth/react';
 
 async function refreshAccessToken(tokenObject) {
   try {
@@ -77,6 +78,18 @@ const authOptions: NextAuthOptions = {
     signIn: '/auth/signin',
   },
   callbacks: {
+    async signIn({ user, account, profile, email, credentials }) {
+      console.log('dupa signIn');
+      const isAllowedToSignIn = true;
+      if (isAllowedToSignIn) {
+        return true;
+      } else {
+        // Return false to display a default error message
+        return false;
+        // Or you can return a URL to redirect to:
+        // return '/unauthorized'
+      }
+    },
     async jwt({ token, user, account }) {
       const user2: any = user;
       const token2: JWT = token;
