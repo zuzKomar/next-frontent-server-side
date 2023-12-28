@@ -20,7 +20,6 @@ import TableFilters from './components/tableFilters';
 import { Car } from '../../types/Car';
 import { CarFiltersType } from '../../types/UserForm';
 import IndexPage from '../Head';
-import authOptions from '../api/auth/[...nextauth]';
 
 interface IndexCarsPageProps {
   cars: Car[];
@@ -31,7 +30,7 @@ export default async function Cars({ cars }: IndexCarsPageProps) {
   const [showTableFilters, setShowTableFilters] = useState(false);
   const [carData, setCarData] = useState<any[]>([...cars]);
   const [noCars, setNoCars] = useState<boolean>(cars.length === 0);
-  const data = getServerSession(authOptions);
+  const data = getServerSession();
 
   const columns = [
     { name: 'Brand', uid: 'brand' },
@@ -199,7 +198,7 @@ export default async function Cars({ cars }: IndexCarsPageProps) {
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   try {
-    const session: Session = await getServerSession(authOptions);
+    const session: Session = await getServerSession();
     const user = session?.user;
 
     if (!user) {

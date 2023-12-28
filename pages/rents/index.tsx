@@ -16,7 +16,6 @@ import { getSession } from 'next-auth/react';
 import { Rent } from '../../types/Rent';
 import IndexPage from '../Head';
 import { getServerSession } from 'next-auth';
-import authOptions from '../api/auth/[...nextauth]';
 
 type RentsPageProps = {
   rents: Rent[];
@@ -24,7 +23,7 @@ type RentsPageProps = {
 
 export default async function Rents({ rents }: RentsPageProps) {
   const router = useRouter();
-  const session = await getServerSession(authOptions);
+  const session = await getServerSession();
   const token = session.user.token || '';
 
   const columns = [

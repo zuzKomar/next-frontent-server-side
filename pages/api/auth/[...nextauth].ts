@@ -1,8 +1,6 @@
 import CredentialsProvider from 'next-auth/providers/credentials';
-import NextAuth from 'next-auth/next';
-import { NextAuthOptions } from 'next-auth';
+import NextAuth from 'next-auth';
 import { JWT } from 'next-auth/jwt';
-import { signIn } from 'next-auth/react';
 
 async function refreshAccessToken(tokenObject) {
   try {
@@ -30,7 +28,7 @@ async function refreshAccessToken(tokenObject) {
   }
 }
 
-const authOptions: NextAuthOptions = {
+const handler = NextAuth({
   theme: {
     colorScheme: 'auto', // "auto" | "dark" | "light"
     brandColor: '', // Hex color code #33FF5D
@@ -78,7 +76,7 @@ const authOptions: NextAuthOptions = {
     signIn: '/auth/signin',
   },
   callbacks: {
-    async signIn({ user, account, profile, email, credentials }) {
+    async signIn(user) {
       console.log('dupa signIn');
       const isAllowedToSignIn = true;
       if (isAllowedToSignIn) {
@@ -139,9 +137,6 @@ const authOptions: NextAuthOptions = {
       return session;
     },
   },
-};
+});
 
-const handler = NextAuth(authOptions);
-
-export default authOptions;
 export { handler as GET, handler as POST, handler as PATCH };

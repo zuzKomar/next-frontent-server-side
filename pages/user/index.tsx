@@ -12,7 +12,6 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useRouter } from 'next/router';
 import IndexPage from '../Head';
 import { getServerSession } from 'next-auth';
-import authOptions from '../api/auth/[...nextauth]';
 
 interface UserPageProps {
   userData: User;
@@ -28,7 +27,7 @@ const schema = yup.object({
 });
 
 export default async function UserPage({ userData }: UserPageProps) {
-  const data = await getServerSession(authOptions);
+  const data = await getServerSession();
   const [editMode, setEditMode] = useState(false);
   const [formData, setFormData] = useState(userData);
   const token = data.user ? data.user.token : '';
@@ -218,7 +217,7 @@ export default async function UserPage({ userData }: UserPageProps) {
 
 export async function getServerSideProps() {
   try {
-    const session = await getServerSession(authOptions);
+    const session = await getServerSession();
     console.log(session);
     if (!session) {
       return {
