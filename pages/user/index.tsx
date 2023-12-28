@@ -219,7 +219,7 @@ export default async function UserPage({ userData }: UserPageProps) {
 export async function getServerSideProps() {
   try {
     const session = await getServerSession(authOptions);
-
+    console.log(session);
     if (!session) {
       return {
         redirect: {
