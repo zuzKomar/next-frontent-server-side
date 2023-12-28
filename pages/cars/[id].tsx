@@ -9,7 +9,7 @@ export interface CarPageProps {
   data: Car;
 }
 
-export default function CarPage({ data }: CarPageProps) {
+export default async function CarPage({ data }: CarPageProps) {
   return (
     <PageContainer>
       <IndexPage />
@@ -46,7 +46,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 }
 
 export async function getCar(carId: string, token: string) {
-  const response = await fetch(`${process.env.NEST_URL}cars/${carId}`, {
+  const response = await fetch(`${process.env.NEST_URL}/cars/${carId}`, {
     mode: 'cors',
     headers: {
       'Content-Type': 'application/json',

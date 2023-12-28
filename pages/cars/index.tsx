@@ -31,7 +31,7 @@ export default async function Cars({ cars }: IndexCarsPageProps) {
   const [showTableFilters, setShowTableFilters] = useState(false);
   const [carData, setCarData] = useState<any[]>([...cars]);
   const [noCars, setNoCars] = useState<boolean>(cars.length === 0);
-  const data = await getServerSession(authOptions);
+  const data = getServerSession(authOptions);
 
   const columns = [
     { name: 'Brand', uid: 'brand' },
@@ -90,7 +90,7 @@ export default async function Cars({ cars }: IndexCarsPageProps) {
 
     if (pathname.length > 5) {
       window.history.pushState({}, null, pathname);
-      const token = data ? data.user.token : '';
+      const token = (await data).user ? (await data).user.token : '';
 
       await fetch(`${process.env.NEST_URL}${pathname}`, {
         mode: 'cors',
@@ -118,7 +118,7 @@ export default async function Cars({ cars }: IndexCarsPageProps) {
 
   async function clearFiltersHandler() {
     window.history.pushState({}, '', 'cars');
-    const token = data.user ? data.user.token : '';
+    const token = (await data).user ? (await data).user.token : '';
 
     await fetch(`${process.env.NEST_URL}cars`, {
       mode: 'cors',
@@ -226,7 +226,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
 };
 
 export async function getCars(token: string) {
-  const response = await fetch(`${process.env.NEST_URL}cars`, {
+  const response = await fetch(`${process.env.NEST_URL}/cars`, {
     mode: 'cors',
     headers: {
       'Content-Type': 'application/json',

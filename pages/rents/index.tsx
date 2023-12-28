@@ -54,7 +54,7 @@ export default async function Rents({ rents }: RentsPageProps) {
       damagedCar: true,
     };
 
-    fetch(`${process.env.NEST_URL}rents/${rentId}`, {
+    fetch(`${process.env.NEST_URL}/rents/${rentId}`, {
       method: 'PATCH',
       body: JSON.stringify(updateRentDto),
       mode: 'cors',
@@ -120,6 +120,7 @@ export default async function Rents({ rents }: RentsPageProps) {
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   try {
     const session = await getSession({ req: context.req });
+    console.log('rents', session);
     if (!session) {
       return {
         redirect: {
@@ -128,8 +129,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         },
       };
     } else {
-      const token = session!.user!.token || '';
-      const rents = await getUserRents(token, session.user.firstName);
+      const token = session.user.token || '';
+      const rents = await getUserRents(token, session.user.email);
       return { props: { rents: rents } };
     }
   } catch (err) {
@@ -138,7 +139,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 }
 
 export async function getUserRents(token: string, email: string) {
-  const response = await fetch(`${process.env.NEST_URL}users/${email}`, {
+  const response = await fetch(`${process.env.NEST_URL}/users/${email}`, {
     mode: 'cors',
     headers: {
       'Content-Type': 'application/json',

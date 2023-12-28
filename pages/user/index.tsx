@@ -67,7 +67,7 @@ export default async function UserPage({ userData }: UserPageProps) {
       loginCredentialsChanged = true;
     }
 
-    fetch(`${process.env.NEST_URL}users/${formData.id}`, {
+    fetch(`${process.env.NEST_URL}/users/${formData.id}`, {
       method: 'PATCH',
       body: JSON.stringify(updateUserDto),
       mode: 'cors',
@@ -216,7 +216,7 @@ export default async function UserPage({ userData }: UserPageProps) {
   );
 }
 
-export async function getServerSideProps(context: GetServerSidePropsContext) {
+export async function getServerSideProps() {
   try {
     const session = await getServerSession(authOptions);
 
@@ -228,8 +228,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         },
       };
     } else {
-      const token = session!.user!.token || '';
-      const user = await getUser(token, session.user.firstName);
+      const token = session.user.token || '';
+      const user = await getUser(token, session.user.email);
       return { props: { userData: user } };
     }
   } catch (err) {
@@ -238,7 +238,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 }
 
 export async function getUser(token: string, email: string) {
-  const response = await fetch(`${process.env.NEST_URL}users/${email}`, {
+  const response = await fetch(`${process.env.NEST_URL}/users/${email}`, {
     mode: 'cors',
     headers: {
       'Content-Type': 'application/json',

@@ -9,7 +9,7 @@ export const Navbar = () => {
   const { data: session } = useSession();
   return (
     <Flex justifyContent="center" direction="column">
-      {session && <h2>{`Logged as ${session.user.firstName + session.user.lastName}`}</h2>}
+      {session && <h2>{`Logged as ${session?.user.firstName + ' ' + session?.user.lastName}`}</h2>}
       <Flex direction="row" justifyContent="center">
         <Tabs aria-label="navigation" density="compact" selectedKey={currentPath}>
           <TabList>

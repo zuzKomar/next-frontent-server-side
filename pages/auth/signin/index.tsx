@@ -46,6 +46,7 @@ export default function Signin() {
     //   .then(res => res.json())
     //   .then(() => {
     await signIn('credentials', {
+      // TODO to be refactored
       redirect: false,
       email: data.email,
       password: data.password,
