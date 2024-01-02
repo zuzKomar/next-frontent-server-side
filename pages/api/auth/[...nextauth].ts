@@ -39,7 +39,7 @@ export const authOptions: NextAuthOptions = {
         password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials) {
-        console.log('dupa');
+        console.log('dupa callback authorize');
         if (!credentials.email || !credentials.password) return null;
         const { email, password } = credentials;
         const res = await fetch(`${process.env.NEST_URL}/auth/login`, {
@@ -51,7 +51,7 @@ export const authOptions: NextAuthOptions = {
             'Content-Type': 'application/json',
           },
         });
-
+        console.log(res);
         if (res.status === 401) {
           console.log(res.statusText);
 
