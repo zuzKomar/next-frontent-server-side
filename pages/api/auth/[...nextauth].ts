@@ -28,17 +28,9 @@ async function refreshAccessToken(tokenObject) {
   }
 }
 
-const handler = NextAuth({
-  theme: {
-    colorScheme: 'auto', // "auto" | "dark" | "light"
-    brandColor: '', // Hex color code #33FF5D
-    logo: '/logo.png', // Absolute URL to image
-  },
+export const authOptions = {
   // Enable debug messages in the console if you are having problems
   debug: true,
-  session: {
-    strategy: 'jwt',
-  },
   providers: [
     CredentialsProvider({
       name: 'Credentials',
@@ -137,6 +129,8 @@ const handler = NextAuth({
       return session;
     },
   },
-});
+};
 
-export { handler as GET, handler as POST, handler as PATCH };
+const handler = NextAuth(authOptions);
+
+export { handler as GET, handler as POST };
