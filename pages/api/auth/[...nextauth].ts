@@ -1,5 +1,5 @@
 import CredentialsProvider from 'next-auth/providers/credentials';
-import NextAuth from 'next-auth';
+import NextAuth, { NextAuthOptions } from 'next-auth';
 import { JWT } from 'next-auth/jwt';
 
 async function refreshAccessToken(tokenObject) {
@@ -28,7 +28,7 @@ async function refreshAccessToken(tokenObject) {
   }
 }
 
-export const authOptions = {
+export const authOptions: NextAuthOptions = {
   // Enable debug messages in the console if you are having problems
   debug: true,
   providers: [
@@ -132,5 +132,7 @@ export const authOptions = {
 };
 
 const handler = NextAuth(authOptions);
+
+export default NextAuth(authOptions);
 
 export { handler as GET, handler as POST };
