@@ -1,4 +1,4 @@
-'use client';
+'use server';
 import { Button, Form, View } from '@adobe/react-spectrum';
 import { PageContainer } from '../../../components/PageContainer';
 import { useForm, SubmitHandler } from 'react-hook-form';
