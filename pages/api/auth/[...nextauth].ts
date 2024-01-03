@@ -133,17 +133,14 @@ export const authOptions: NextAuthOptions = {
     },
     async session({ session, token }) {
       console.log('session', session);
-      const tokenUser = token.user;
-      const tokenError = token.error;
-      const tokenExpires = token.expires;
 
-      session.user = tokenUser;
-      session.error = tokenError;
-      session.expires = tokenExpires;
+      session.user = token.user;
+      session.error = token.error;
+      session.expires = token.expires;
 
-      const tokenPayload = JSON.parse(atob(tokenUser.token.split('.')[1]));
+      const tokenPayload = JSON.parse(atob(token.user.token.split('.')[1]));
       session.expires = new Date(tokenPayload.exp * 1000);
-      //console.log('session after eventual improvements', session);
+      console.log('session after eventual improvements', session);
       return session;
     },
   },
