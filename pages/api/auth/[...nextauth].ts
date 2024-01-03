@@ -118,14 +118,32 @@ export const authOptions: NextAuthOptions = {
         token.accessTokenExpiry = tokenPayload.exp;
         token.refreshToken = userTmp.refreshToken;
       }
-      console.log('token2', token);
+      console.log('token', token);
+      //token2 {
+      //   name: undefined,
+      //   email: 'zuza1@wp.pl',
+      //   picture: undefined,
+      //   sub: '1',
+      //   user: {
+      //     id: 1,
+      //     firstName: 'Zuzanna',
+      //     lastName: 'Komar',
+      //     email: 'zuza1@wp.pl',
+      //     token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsInVzZXJuYW1lIjoienV6YTFAd3AucGwiLCJpYXQiOjE3MDQyOTA0NjAsImV4cCI6MTcwNDM3Njg2MH0.KlZ0Uf8jK_WTmK2asvSWYPDD9kFO-NahQaLzGfVmgVQ',
+      //     refreshToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsInVzZXJuYW1lIjoienV6YTFAd3AucGwiLCJpYXQiOjE3MDQyOTA0NjAsImV4cCI6MTcwNjg4MjQ2MH0.ZAuvpX87oK87u0tSgnw76lkshwsJoWavcVkMJatFh4Y'
+      //   },
+      //   accessToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsInVzZXJuYW1lIjoienV6YTFAd3AucGwiLCJpYXQiOjE3MDQyOTA0NjAsImV4cCI6MTcwNDM3Njg2MH0.KlZ0Uf8jK_WTmK2asvSWYPDD9kFO-NahQaLzGfVmgVQ',
+      //   accessTokenExpiry: 1704376860,
+      //   refreshToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsInVzZXJuYW1lIjoienV6YTFAd3AucGwiLCJpYXQiOjE3MDQyOTA0NjAsImV4cCI6MTcwNjg4MjQ2MH0.ZAuvpX87oK87u0tSgnw76lkshwsJoWavcVkMJatFh4Y'
+      // }
+
       //Math.round((1676926364 - 900000)-Date.now())
       //const shouldRefreshTime = Math.round((token.accessTokenExpiry - 900000) - Date.now());
       //const shouldRefreshTime = Date.now()-60000 >= (token.accessTokenExpiry * 1000)
-      const accessTokenk = <string>token.accessToken;
-      const tokenPayload = JSON.parse(atob(accessTokenk));
+      // const accessTokenk = <string>token.accessToken;
+      // const tokenPayload = JSON.parse(atob(accessTokenk));
       //console.log('data w jwt callbacku', new Date(tokenPayload.exp * 1000));
-      const shouldRefreshToken = Date.now() > tokenPayload.exp * 1000;
+      const shouldRefreshToken = Date.now() > parseInt(<string>token.accessTokenExpiry) * 1000;
       if (shouldRefreshToken) {
         //console.log('call po nowy accessToken');
         token = await refreshAccessToken(token);
