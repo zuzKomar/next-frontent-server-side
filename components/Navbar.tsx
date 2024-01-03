@@ -29,11 +29,12 @@ export const Navbar = () => {
         </Tabs>
         <>
           {session ? (
-            <button
-              onClick={() => signOut({ callbackUrl: `${process.env.NEXTAUTH_URL}auth/signin` })}
-            >
-              Sign out
-            </button>
+            // <button
+            //   onClick={() => signOut({ callbackUrl: `/auth/signin` })}
+            // >
+            //   Sign out
+            // </button>
+            <Link href="/api/auth/logout">{'Sign out'}</Link>
           ) : (
             <button
               onClick={() => {
