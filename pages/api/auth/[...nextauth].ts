@@ -45,19 +45,19 @@ export const authOptions: NextAuthOptions = {
         const res = await fetch(`${process.env.NEST_URL}/auth/login`, {
           method: 'POST',
           body: JSON.stringify({ email, password }),
-          // mode: 'cors',
-          // credentials: 'include',
+          mode: 'cors',
+          credentials: 'include',
           headers: {
             'Content-Type': 'application/json',
           },
         });
-        console.log(res);
+        console.log('line 54', res);
         if (res.status === 401) {
-          console.log(res.statusText);
+          console.log('line 56', await res.statusText);
 
           return null;
         }
-        console.log(await res.text());
+        console.log('line 60', await res.text());
         const user = await res.json();
         return user;
       },
