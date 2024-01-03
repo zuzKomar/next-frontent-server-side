@@ -9,6 +9,8 @@ async function refreshAccessToken(tokenObject) {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
+        mode: 'cors',
+        credentials: 'include',
         Authorization: 'Bearer ' + tokenObject.refreshToken,
       },
     });
@@ -51,15 +53,15 @@ export const authOptions: NextAuthOptions = {
             'Content-Type': 'application/json',
           },
         });
-        console.log('line 54', res);
+        console.log('line 56', res);
         if (res.status === 401) {
-          console.log('line 56', await res.statusText);
+          console.log('line 58', await res.statusText);
 
           return null;
         }
-        console.log('line 60', await res.text());
+        console.log('line 62', await res.text());
         const user = await res.json();
-        console.log('line 62', user);
+        console.log('line 64', user);
         return user;
       },
     }),
