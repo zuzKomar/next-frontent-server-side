@@ -59,8 +59,8 @@ export const authOptions: NextAuthOptions = {
 
           return null;
         }
-        console.log('line 62', await res.text());
-        const user = await res.json();
+
+        const user = await res.text();
         console.log('line 64', user);
         return user;
       },
