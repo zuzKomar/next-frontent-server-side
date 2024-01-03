@@ -110,7 +110,10 @@ export const authOptions: NextAuthOptions = {
 
       if (account) {
         token.user = userTmp;
-        const tokenPayload = JSON.parse(atob(userTmp.accessToken));
+        const tokenPayload = JSON.parse(
+          Buffer.from(userTmp.accessToken.split('.')[1], 'base64').toString(),
+        );
+        console.log(tokenPayload);
         token.accessToken = userTmp.token;
         token.accessTokenExpiry = tokenPayload.exp;
         token.refreshToken = userTmp.refreshToken;
