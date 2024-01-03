@@ -111,7 +111,7 @@ export const authOptions: NextAuthOptions = {
       if (account) {
         token.user = userTmp;
         const tokenPayload = JSON.parse(
-          Buffer.from(userTmp.accessToken.split('.')[1], 'base64').toString(),
+          Buffer.from(userTmp.token.split('.')[1], 'base64').toString(),
         );
         console.log(tokenPayload);
         token.accessToken = userTmp.token;
