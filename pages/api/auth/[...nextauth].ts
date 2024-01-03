@@ -93,9 +93,19 @@ export const authOptions: NextAuthOptions = {
 
       //user is defined during login ONLY
       console.log('jwt callback: ');
-      console.log('token', token);
-      console.log('user', user);
-      console.log('account', account);
+      console.log('token2', token2);
+      //token { name: undefined, email: 'zuza1@wp.pl', picture: undefined, sub: '1' }
+      console.log('user2', user2);
+      // user {
+      //   id: 1,
+      //   firstName: 'Zuzanna',
+      //   lastName: 'Komar',
+      //   email: 'zuza1@wp.pl',
+      //   token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsInVzZXJuYW1lIjoienV6YTFAd3AucGwiLCJpYXQiOjE3MDQyODcxMDQsImV4cCI6MTcwNDM3MzUwNH0.TcKi5Uc1vHEXVtCyYELORnsabkNoK6bQOnvzP9Im32g',
+      //   refreshToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsInVzZXJuYW1lIjoienV6YTFAd3AucGwiLCJpYXQiOjE3MDQyODcxMDQsImV4cCI6MTcwNjg3OTEwNH0.0kQMw4SksicbbhQC3wRQsnXaThr2yU2elSFZJMH9ItY'
+      // }
+      //console.log('account', account);
+      //account { providerAccountId: 1, type: 'credentials', provider: 'credentials' }
 
       if (account && user2) {
         token2.user = user2;
@@ -103,6 +113,7 @@ export const authOptions: NextAuthOptions = {
         token2.accessTokenExpiry = token.exp;
         token2.refreshToken = user2.refreshToken;
       }
+      console.log('token2', token2);
       //Math.round((1676926364 - 900000)-Date.now())
       //const shouldRefreshTime = Math.round((token.accessTokenExpiry - 900000) - Date.now());
       //const shouldRefreshTime = Date.now()-60000 >= (token.accessTokenExpiry * 1000)
