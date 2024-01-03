@@ -1,4 +1,4 @@
-import { GetServerSideProps } from 'next';
+'use server';
 import {
   View,
   Button,
@@ -197,9 +197,9 @@ export default async function Cars({ cars }: IndexCarsPageProps) {
   );
 }
 
-export async function getServerSideProps() {
+export async function getServerSideProps({ req, res }) {
   try {
-    const session: Session = await unstable_getServerSession(authOptions);
+    const session: Session = await unstable_getServerSession(req);
     console.log(session);
     const user = session?.user;
 
