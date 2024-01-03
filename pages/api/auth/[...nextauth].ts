@@ -41,7 +41,6 @@ export const authOptions: NextAuthOptions = {
         password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials) {
-        console.log('dupa callback authorize');
         if (!credentials.email || !credentials.password) return null;
         const { email, password } = credentials;
         const res = await fetch(`${process.env.NEST_URL}/auth/login`, {
@@ -53,24 +52,13 @@ export const authOptions: NextAuthOptions = {
             'Content-Type': 'application/json',
           },
         });
-        console.log('line 56', res);
-        if (res.status === 401) {
-          console.log('line 58', await res.statusText);
 
+        if (res.status === 401) {
           return null;
         }
 
         const userText = await res.text();
         const user = JSON.parse(userText);
-        console.log('line 65', user);
-        console.log({
-          id: user.id,
-          firstName: user.firstName,
-          lastName: user.lastName,
-          email: user.email,
-          token: user.token,
-          refreshToken: user.refreshToken,
-        });
         return {
           id: user.id,
           firstName: user.firstName,
@@ -87,18 +75,18 @@ export const authOptions: NextAuthOptions = {
     signIn: '/auth/signin',
   },
   callbacks: {
-    async signIn(user) {
-      console.log('dupa signIn');
-      const isAllowedToSignIn = true;
-      if (isAllowedToSignIn) {
-        return true;
-      } else {
-        // Return false to display a default error message
-        return false;
-        // Or you can return a URL to redirect to:
-        // return '/unauthorized'
-      }
-    },
+    // async signIn(user) {
+    //   console.log('dupa signIn');
+    //   const isAllowedToSignIn = true;
+    //   if (isAllowedToSignIn) {
+    //     return true;
+    //   } else {
+    //     // Return false to display a default error message
+    //     return false;
+    //     // Or you can return a URL to redirect to:
+    //     // return '/unauthorized'
+    //   }
+    // },
     async jwt({ token, user, account }) {
       const user2: any = user;
       const token2: JWT = token;
