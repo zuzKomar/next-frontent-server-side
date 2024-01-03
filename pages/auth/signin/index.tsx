@@ -50,10 +50,13 @@ export default function Signin() {
       redirect: false,
       email: data.email,
       password: data.password,
-      callbackUrl: '/',
-    }).catch(err => {
-      console.error(err);
-    });
+    })
+      .then(() => {
+        router.push(`/`);
+      })
+      .catch(err => {
+        console.error(err);
+      });
   };
   function redirectToSignupPage() {
     router.push(`/auth/signup`);

@@ -75,74 +75,21 @@ export const authOptions: NextAuthOptions = {
     signIn: '/auth/signin',
   },
   callbacks: {
-    // async signIn(user) {
-    //   console.log('dupa signIn');
-    //   const isAllowedToSignIn = true;
-    //   if (isAllowedToSignIn) {
-    //     return true;
-    //   } else {
-    //     // Return false to display a default error message
-    //     return false;
-    //     // Or you can return a URL to redirect to:
-    //     // return '/unauthorized'
-    //   }
-    // },
     async jwt({ token, user, account }) {
       const userTmp: any = {
         ...user,
       };
-
-      //user is defined during login ONLY
-      console.log('jwt callback: ');
-      //console.log('token2', token);
-      //token { name: undefined, email: 'zuza1@wp.pl', picture: undefined, sub: '1' }
-      console.log('user', user);
-      // user {
-      //   id: 1,
-      //   firstName: 'Zuzanna',
-      //   lastName: 'Komar',
-      //   email: 'zuza1@wp.pl',
-      //   token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsInVzZXJuYW1lIjoienV6YTFAd3AucGwiLCJpYXQiOjE3MDQyODcxMDQsImV4cCI6MTcwNDM3MzUwNH0.TcKi5Uc1vHEXVtCyYELORnsabkNoK6bQOnvzP9Im32g',
-      //   refreshToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsInVzZXJuYW1lIjoienV6YTFAd3AucGwiLCJpYXQiOjE3MDQyODcxMDQsImV4cCI6MTcwNjg3OTEwNH0.0kQMw4SksicbbhQC3wRQsnXaThr2yU2elSFZJMH9ItY'
-      // }
-      //console.log('account', account);
-      //account { providerAccountId: 1, type: 'credentials', provider: 'credentials' }
 
       if (account) {
         token.user = userTmp;
         const tokenPayload = JSON.parse(
           Buffer.from(userTmp.token.split('.')[1], 'base64').toString(),
         );
-        console.log(tokenPayload);
         token.accessToken = userTmp.token;
         token.accessTokenExpiry = tokenPayload.exp;
         token.refreshToken = userTmp.refreshToken;
       }
       console.log('token', token);
-      //token2 {
-      //   name: undefined,
-      //   email: 'zuza1@wp.pl',
-      //   picture: undefined,
-      //   sub: '1',
-      //   user: {
-      //     id: 1,
-      //     firstName: 'Zuzanna',
-      //     lastName: 'Komar',
-      //     email: 'zuza1@wp.pl',
-      //     token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsInVzZXJuYW1lIjoienV6YTFAd3AucGwiLCJpYXQiOjE3MDQyOTA0NjAsImV4cCI6MTcwNDM3Njg2MH0.KlZ0Uf8jK_WTmK2asvSWYPDD9kFO-NahQaLzGfVmgVQ',
-      //     refreshToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsInVzZXJuYW1lIjoienV6YTFAd3AucGwiLCJpYXQiOjE3MDQyOTA0NjAsImV4cCI6MTcwNjg4MjQ2MH0.ZAuvpX87oK87u0tSgnw76lkshwsJoWavcVkMJatFh4Y'
-      //   },
-      //   accessToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsInVzZXJuYW1lIjoienV6YTFAd3AucGwiLCJpYXQiOjE3MDQyOTA0NjAsImV4cCI6MTcwNDM3Njg2MH0.KlZ0Uf8jK_WTmK2asvSWYPDD9kFO-NahQaLzGfVmgVQ',
-      //   accessTokenExpiry: 1704376860,
-      //   refreshToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsInVzZXJuYW1lIjoienV6YTFAd3AucGwiLCJpYXQiOjE3MDQyOTA0NjAsImV4cCI6MTcwNjg4MjQ2MH0.ZAuvpX87oK87u0tSgnw76lkshwsJoWavcVkMJatFh4Y'
-      // }
-
-      //Math.round((1676926364 - 900000)-Date.now())
-      //const shouldRefreshTime = Math.round((token.accessTokenExpiry - 900000) - Date.now());
-      //const shouldRefreshTime = Date.now()-60000 >= (token.accessTokenExpiry * 1000)
-      // const accessTokenk = <string>token.accessToken;
-      // const tokenPayload = JSON.parse(atob(accessTokenk));
-      //console.log('data w jwt callbacku', new Date(tokenPayload.exp * 1000));
       const shouldRefreshToken = Date.now() > parseInt(<string>token.accessTokenExpiry) * 1000;
       if (shouldRefreshToken) {
         //console.log('call po nowy accessToken');
