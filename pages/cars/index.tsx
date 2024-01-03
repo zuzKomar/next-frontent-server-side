@@ -13,14 +13,13 @@ import {
 } from '@adobe/react-spectrum';
 import { PageContainer } from '../../components/PageContainer';
 import { useRouter } from 'next/router';
-import { useSession } from 'next-auth/react';
+import { getSession } from 'next-auth/react';
 import { Session, getServerSession, unstable_getServerSession } from 'next-auth';
 import { useState } from 'react';
 import TableFilters from './components/tableFilters';
 import { Car } from '../../types/Car';
 import { CarFiltersType } from '../../types/UserForm';
 import IndexPage from '../Head';
-import { authOptions } from '../api/auth/[...nextauth]';
 
 interface IndexCarsPageProps {
   cars: Car[];
@@ -197,9 +196,9 @@ export default async function Cars({ cars }: IndexCarsPageProps) {
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
+export async function getServerSideProps(context) {
   try {
-    const session: Session = await getServerSession(authOptions);
+    const session: Session = await getSession(context);
     console.log(session);
     const user = session?.user;
 
@@ -222,7 +221,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
       },
     };
   }
-};
+}
 
 export async function getCars(token: string) {
   const response = await fetch(`${process.env.NEST_URL}/cars`, {
