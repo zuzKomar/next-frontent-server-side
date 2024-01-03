@@ -197,10 +197,9 @@ export default async function Cars({ cars }: IndexCarsPageProps) {
 }
 
 export async function getServerSideProps({ req, res }) {
-  'use server';
   try {
     const session: Session = await unstable_getServerSession(req);
-    console.log(session);
+    console.log('', session);
     const user = session?.user;
 
     if (!user) throw new Error('Missing authenticated user!');
