@@ -29,13 +29,9 @@ export const Navbar = () => {
         </Tabs>
         <>
           {session ? (
-            // <button
-            //   onClick={() => signOut({ callbackUrl: `/auth/signin` })}
-            // >
-            //   Sign out
-            // </button>
-            <Link href="/api/auth/logout">{'Sign out'}</Link>
+            <button onClick={() => router.push('/api/auth/logout')}>Sign out</button>
           ) : (
+            //<Link href="/api/auth/logout">{'Sign out'}</Link>
             <button
               onClick={() => {
                 router.push('/auth/signin');
