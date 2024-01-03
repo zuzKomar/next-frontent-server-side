@@ -203,26 +203,24 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
     console.log(session);
     const user = session?.user;
 
-    if (!user) {
-      return {
-        redirect: {
-          destination: '/auth/signin',
-          permanent: false,
-        },
-      };
-    } else {
-      //console.log(user);
-      const token = user.token || '';
-      const cars = await getCars(token);
+    if (!user) throw new Error('Missing authenticated user!');
 
-      return {
-        props: {
-          cars: cars,
-        },
-      };
-    }
+    const token = user.token || '';
+    const cars = await getCars(token);
+
+    return {
+      props: {
+        cars: cars,
+      },
+    };
   } catch (err) {
     console.log(err);
+    return {
+      redirect: {
+        destination: '/auth/signin',
+        statusCode: 307,
+      },
+    };
   }
 };
 
