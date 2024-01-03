@@ -88,14 +88,15 @@ export const authOptions: NextAuthOptions = {
     //   }
     // },
     async jwt({ token, user, account }) {
-      const user2: any = user;
-      const token2: JWT = token;
+      const userTmp: any = {
+        ...user,
+      };
 
       //user is defined during login ONLY
       console.log('jwt callback: ');
-      console.log('token2', token2);
+      //console.log('token2', token);
       //token { name: undefined, email: 'zuza1@wp.pl', picture: undefined, sub: '1' }
-      console.log('user2', user2);
+      console.log('user', user);
       // user {
       //   id: 1,
       //   firstName: 'Zuzanna',
@@ -107,17 +108,18 @@ export const authOptions: NextAuthOptions = {
       //console.log('account', account);
       //account { providerAccountId: 1, type: 'credentials', provider: 'credentials' }
 
-      if (account && user2) {
-        token2.user = user2;
-        token2.accessToken = user2.token;
-        token2.accessTokenExpiry = token.exp;
-        token2.refreshToken = user2.refreshToken;
+      if (account) {
+        token.user = userTmp;
+        const tokenPayload = JSON.parse(atob(userTmp.accessToken));
+        token.accessToken = userTmp.token;
+        token.accessTokenExpiry = tokenPayload.exp;
+        token.refreshToken = userTmp.refreshToken;
       }
-      console.log('token2', token2);
+      console.log('token2', token);
       //Math.round((1676926364 - 900000)-Date.now())
       //const shouldRefreshTime = Math.round((token.accessTokenExpiry - 900000) - Date.now());
       //const shouldRefreshTime = Date.now()-60000 >= (token.accessTokenExpiry * 1000)
-      const accessTokenk = <string>token2.accessToken;
+      const accessTokenk = <string>token.accessToken;
       const tokenPayload = JSON.parse(atob(accessTokenk));
       //console.log('data w jwt callbacku', new Date(tokenPayload.exp * 1000));
       const shouldRefreshToken = Date.now() > tokenPayload.exp * 1000;
