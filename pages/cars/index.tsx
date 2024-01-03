@@ -12,14 +12,13 @@ import {
 } from '@adobe/react-spectrum';
 import { PageContainer } from '../../components/PageContainer';
 import { useRouter } from 'next/router';
-import { getSession } from 'next-auth/react';
-import { Session, getServerSession, unstable_getServerSession } from 'next-auth';
+import { useSession } from 'next-auth/react';
+import { Session, unstable_getServerSession } from 'next-auth';
 import { useState } from 'react';
 import TableFilters from './components/tableFilters';
 import { Car } from '../../types/Car';
 import { CarFiltersType } from '../../types/UserForm';
 import IndexPage from '../Head';
-import { authOptions } from '../api/auth/[...nextauth]';
 
 interface IndexCarsPageProps {
   cars: Car[];
@@ -30,7 +29,7 @@ export default async function Cars({ cars }: IndexCarsPageProps) {
   const [showTableFilters, setShowTableFilters] = useState(false);
   const [carData, setCarData] = useState<any[]>([...cars]);
   const [noCars, setNoCars] = useState<boolean>(cars.length === 0);
-  const data = getServerSession();
+  const { data } = useSession();
 
   const columns = [
     { name: 'Brand', uid: 'brand' },
@@ -198,7 +197,7 @@ export default async function Cars({ cars }: IndexCarsPageProps) {
 
 export async function getServerSideProps({ req, res }) {
   try {
-    const session: Session = await unstable_getServerSession(req);
+    const session: Session = await unstable_getServerSession(req, res, {});
     console.log('', session);
     const user = session?.user;
 
