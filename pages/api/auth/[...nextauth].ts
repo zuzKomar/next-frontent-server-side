@@ -60,9 +60,25 @@ export const authOptions: NextAuthOptions = {
           return null;
         }
 
-        const user = await res.text();
-        console.log('line 64', user);
-        return user;
+        const userText = await res.text();
+        const user = JSON.parse(userText);
+        console.log('line 65', user);
+        console.log({
+          id: user.id,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          email: user.email,
+          token: user.token,
+          refreshToken: user.refreshToken,
+        });
+        return {
+          id: user.id,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          email: user.email,
+          token: user.token,
+          refreshToken: user.refreshToken,
+        };
       },
     }),
   ],
