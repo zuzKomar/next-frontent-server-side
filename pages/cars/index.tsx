@@ -20,6 +20,7 @@ import TableFilters from './components/tableFilters';
 import { Car } from '../../types/Car';
 import { CarFiltersType } from '../../types/UserForm';
 import IndexPage from '../Head';
+import { authOptions } from '../api/auth/[...nextauth]';
 
 interface IndexCarsPageProps {
   cars: Car[];
@@ -198,7 +199,8 @@ export default async function Cars({ cars }: IndexCarsPageProps) {
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   try {
-    const session: Session = await getServerSession();
+    const session: Session = await getServerSession(authOptions);
+    console.log(session);
     const user = session?.user;
 
     if (!user) {
@@ -209,7 +211,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
         },
       };
     } else {
-      console.log(user);
+      //console.log(user);
       const token = user.token || '';
       const cars = await getCars(token);
 
