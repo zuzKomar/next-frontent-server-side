@@ -8,7 +8,7 @@ export type Car = {
   costPerDay: number;
   numberOfSeats: number;
   transmission: string;
-  photo: string;
+  photo: string | null;
   usable: boolean;
   rents: any[];
 };

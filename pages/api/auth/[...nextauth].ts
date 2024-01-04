@@ -1,6 +1,5 @@
 import CredentialsProvider from 'next-auth/providers/credentials';
 import NextAuth, { NextAuthOptions } from 'next-auth';
-import { JWT } from 'next-auth/jwt';
 
 async function refreshAccessToken(tokenObject) {
   try {

@@ -26,7 +26,8 @@ interface IndexCarsPageProps {
   session: any;
 }
 
-export default async function Cars({ cars, session }: IndexCarsPageProps) {
+export default async function Cars({ cars }: IndexCarsPageProps) {
+  console.log(cars);
   const router = useRouter();
   const [showTableFilters, setShowTableFilters] = useState(false);
   const [carData, setCarData] = useState<any[]>([...cars]);
