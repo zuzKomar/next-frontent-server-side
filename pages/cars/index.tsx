@@ -20,12 +20,11 @@ import { Car } from '../../types/Car';
 import { CarFiltersType } from '../../types/UserForm';
 import IndexPage from '../Head';
 import { authOptions } from '../api/auth/[...nextauth]';
+import { InferGetServerSidePropsType } from 'next';
 
-interface IndexCarsPageProps {
-  cars: Car[];
-}
-
-export default async function Cars({ cars }: IndexCarsPageProps) {
+export default async function Cars({
+  cars,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) {
   console.log(cars);
 
   const router = useRouter();
