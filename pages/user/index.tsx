@@ -1,21 +1,16 @@
 import React, { useState } from 'react';
-import { GetServerSidePropsContext } from 'next';
-import { signOut, useSession } from 'next-auth/react';
+import { InferGetServerSidePropsType } from 'next';
 import { PageContainer } from '../../components/PageContainer';
-import { User } from '../../types/User';
 import * as yup from 'yup';
 import styles from '../../styles/signup.module.scss';
 import { Button, Form, TextField, View } from '@adobe/react-spectrum';
 import { IFormInputs } from '../../types/UserForm';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useRouter } from 'next/router';
 import IndexPage from '../Head';
 import { getServerSession } from 'next-auth';
-
-interface UserPageProps {
-  userData: User;
-}
+import { authOptions } from '../api/auth/[...nextauth]';
+import { signOut } from 'next-auth/react';
 
 const schema = yup.object({
   firstName: yup.string().required().min(2).max(30),
@@ -26,11 +21,13 @@ const schema = yup.object({
   confirmPassword: yup.string().oneOf([yup.ref('password'), '']),
 });
 
-export default async function UserPage({ userData }: UserPageProps) {
-  const data = await getServerSession();
+export default async function UserPage({
+  userData,
+  sessionUser,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const [editMode, setEditMode] = useState(false);
   const [formData, setFormData] = useState(userData);
-  const token = data.user ? data.user.token : '';
+  const token = sessionUser.token;
   let loginCredentialsChanged = false;
 
   const {
@@ -215,24 +212,30 @@ export default async function UserPage({ userData }: UserPageProps) {
   );
 }
 
-export async function getServerSideProps() {
+export async function getServerSideProps(context) {
   try {
-    const session = await getServerSession();
-    console.log(session);
-    if (!session) {
-      return {
-        redirect: {
-          destination: '/auth/signin',
-          permanent: false,
-        },
-      };
-    } else {
-      const token = session.user.token || '';
-      const user = await getUser(token, session.user.email);
-      return { props: { userData: user } };
-    }
+    const session = await getServerSession(context.req, context.res, authOptions);
+
+    if (!session) throw new Error('Missing authenticated user!');
+    const user = session?.user;
+    const token = user.token || '';
+    const email = user.email || '';
+    const userData = await getUser(token, email);
+
+    return {
+      props: {
+        userData: userData,
+        sessionUser: session.user,
+      },
+    };
   } catch (err) {
     console.log(err);
+    return {
+      redirect: {
+        destination: '/auth/signin',
+        statusCode: 307,
+      },
+    };
   }
 }
 
