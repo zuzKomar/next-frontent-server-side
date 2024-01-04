@@ -22,15 +22,13 @@ import { authOptions } from '../api/auth/[...nextauth]';
 import { InferGetServerSidePropsType } from 'next';
 import { getSession } from 'next-auth/react';
 
-export default async function Cars({
-  cars,
-}: InferGetServerSidePropsType<typeof getServerSideProps>) {
+export default function Cars({ cars }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const router = useRouter();
   const [showTableFilters, setShowTableFilters] = useState(false);
   const [carData, setCarData] = useState<Car[]>(cars);
   const [noCars, setNoCars] = useState<boolean>(cars.length === 0);
-  const session = await getSession();
-  const token = session.user.token || '';
+  // const session = getSession();
+  // const token = session.user.token || '';
 
   const columns = [
     { name: 'Brand', uid: 'brand' },
@@ -91,7 +89,7 @@ export default async function Cars({
         mode: 'cors',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: 'Bearer ' + token,
+          Authorization: 'Bearer ' + 'token',
         },
       })
         .then(res => {
@@ -117,7 +115,7 @@ export default async function Cars({
       mode: 'cors',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + token,
+        Authorization: 'Bearer ' + 'token',
       },
     })
       .then(res => {
@@ -198,10 +196,11 @@ export async function getServerSideProps(context) {
     const user = session?.user;
     const token = user.token || '';
     const cars = await getCars(token);
+    const responsee = cars ? [...cars] : [];
 
     return {
       props: {
-        cars,
+        cars: responsee,
         session,
       },
     };
