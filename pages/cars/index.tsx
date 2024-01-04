@@ -26,13 +26,14 @@ interface IndexCarsPageProps {
   session: any;
 }
 
-export default async function Cars({ cars }: IndexCarsPageProps) {
+export default async function Cars({ cars, session }: IndexCarsPageProps) {
   console.log(cars);
+  console.log(session);
   const router = useRouter();
   const [showTableFilters, setShowTableFilters] = useState(false);
   const [carData, setCarData] = useState<any[]>([...cars]);
   const [noCars, setNoCars] = useState<boolean>(cars.length === 0);
-  const { data } = useSession();
+  //const { data } = useSession();
 
   const columns = [
     { name: 'Brand', uid: 'brand' },
@@ -44,104 +45,99 @@ export default async function Cars({ cars }: IndexCarsPageProps) {
   ];
 
   async function fetchFilteredData(filtersData: CarFiltersType) {
-    let newUrl = '?';
-
-    if (filtersData.brand && filtersData.brand.length > 0) {
-      newUrl += 'brand=' + filtersData.brand + '&';
-    }
-    if (filtersData.model && filtersData.model.length > 0) {
-      newUrl += 'model=' + filtersData.model + '&';
-    }
-    if (filtersData.transmission.name.length > 0) {
-      newUrl += 'transmission=' + filtersData.transmission.name + '&';
-    }
-    if (filtersData.productionYear.start > 1970) {
-      newUrl += 'productionYearFrom=' + filtersData.productionYear.start + '&';
-    }
-    if (filtersData.productionYear.end < 2023) {
-      newUrl += 'productionYearTo=' + filtersData.productionYear.end + '&';
-    }
-    if (filtersData.power.start > 80) {
-      newUrl += 'powerFrom=' + filtersData.power.start + '&';
-    }
-    if (filtersData.power.end < 800) {
-      newUrl += 'powerTo=' + filtersData.power.end + '&';
-    }
-    if (filtersData.capacity.start > 0) {
-      newUrl += 'capacityFrom=' + filtersData.capacity.start + '&';
-    }
-    if (filtersData.capacity.end < 10) {
-      newUrl += 'capacityTo=' + filtersData.capacity.end + '&';
-    }
-    if (filtersData.costPerDay.start > 50) {
-      newUrl += 'costPerDayFrom=' + filtersData.costPerDay.start + '&';
-    }
-    if (filtersData.costPerDay.end < 1000) {
-      newUrl += 'costPerDayTo=' + filtersData.costPerDay.end + '&';
-    }
-    if (filtersData.numberOfSeats.start > 2) {
-      newUrl += 'numberOfSeatsFrom=' + filtersData.numberOfSeats.start + '&';
-    }
-    if (filtersData.numberOfSeats.end < 7) {
-      newUrl += 'numberOfSeatsTo=' + filtersData.numberOfSeats.end + '&';
-    }
-
-    const url = new URL(window.location.href);
-    const pathname = url.pathname.slice(1) + newUrl.slice(0, -1);
-
-    if (pathname.length > 5) {
-      window.history.pushState({}, null, pathname);
-      const token = (await data).user ? (await data).user.token : '';
-
-      await fetch(`${process.env.NEST_URL}${pathname}`, {
-        mode: 'cors',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: 'Bearer ' + token,
-        },
-      })
-        .then(res => {
-          return res.json();
-        })
-        .then(data => {
-          if (data.length > 0) {
-            setCarData(data);
-            setNoCars(false);
-          } else {
-            setNoCars(true);
-          }
-        })
-        .catch(err => {
-          console.log(err);
-        });
-    }
+    // let newUrl = '?';
+    // if (filtersData.brand && filtersData.brand.length > 0) {
+    //   newUrl += 'brand=' + filtersData.brand + '&';
+    // }
+    // if (filtersData.model && filtersData.model.length > 0) {
+    //   newUrl += 'model=' + filtersData.model + '&';
+    // }
+    // if (filtersData.transmission.name.length > 0) {
+    //   newUrl += 'transmission=' + filtersData.transmission.name + '&';
+    // }
+    // if (filtersData.productionYear.start > 1970) {
+    //   newUrl += 'productionYearFrom=' + filtersData.productionYear.start + '&';
+    // }
+    // if (filtersData.productionYear.end < 2023) {
+    //   newUrl += 'productionYearTo=' + filtersData.productionYear.end + '&';
+    // }
+    // if (filtersData.power.start > 80) {
+    //   newUrl += 'powerFrom=' + filtersData.power.start + '&';
+    // }
+    // if (filtersData.power.end < 800) {
+    //   newUrl += 'powerTo=' + filtersData.power.end + '&';
+    // }
+    // if (filtersData.capacity.start > 0) {
+    //   newUrl += 'capacityFrom=' + filtersData.capacity.start + '&';
+    // }
+    // if (filtersData.capacity.end < 10) {
+    //   newUrl += 'capacityTo=' + filtersData.capacity.end + '&';
+    // }
+    // if (filtersData.costPerDay.start > 50) {
+    //   newUrl += 'costPerDayFrom=' + filtersData.costPerDay.start + '&';
+    // }
+    // if (filtersData.costPerDay.end < 1000) {
+    //   newUrl += 'costPerDayTo=' + filtersData.costPerDay.end + '&';
+    // }
+    // if (filtersData.numberOfSeats.start > 2) {
+    //   newUrl += 'numberOfSeatsFrom=' + filtersData.numberOfSeats.start + '&';
+    // }
+    // if (filtersData.numberOfSeats.end < 7) {
+    //   newUrl += 'numberOfSeatsTo=' + filtersData.numberOfSeats.end + '&';
+    // }
+    // const url = new URL(window.location.href);
+    // const pathname = url.pathname.slice(1) + newUrl.slice(0, -1);
+    // if (pathname.length > 5) {
+    //   window.history.pushState({}, null, pathname);
+    //   const token = (await data).user ? (await data).user.token : '';
+    //   await fetch(`${process.env.NEST_URL}${pathname}`, {
+    //     mode: 'cors',
+    //     headers: {
+    //       'Content-Type': 'application/json',
+    //       Authorization: 'Bearer ' + token,
+    //     },
+    //   })
+    //     .then(res => {
+    //       return res.json();
+    //     })
+    //     .then(data => {
+    //       if (data.length > 0) {
+    //         setCarData(data);
+    //         setNoCars(false);
+    //       } else {
+    //         setNoCars(true);
+    //       }
+    //     })
+    //     .catch(err => {
+    //       console.log(err);
+    //     });
+    // }
   }
 
   async function clearFiltersHandler() {
-    window.history.pushState({}, '', 'cars');
-    const token = (await data).user ? (await data).user.token : '';
-
-    await fetch(`${process.env.NEST_URL}cars`, {
-      mode: 'cors',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + token,
-      },
-    })
-      .then(res => {
-        return res.json();
-      })
-      .then(data => {
-        if (data.length > 0) {
-          setCarData(data);
-          setNoCars(false);
-        } else {
-          setNoCars(true);
-        }
-      })
-      .catch(err => {
-        console.log(err);
-      });
+    // window.history.pushState({}, '', 'cars');
+    // const token = (await data).user ? (await data).user.token : '';
+    // await fetch(`${process.env.NEST_URL}cars`, {
+    //   mode: 'cors',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //     Authorization: 'Bearer ' + token,
+    //   },
+    // })
+    //   .then(res => {
+    //     return res.json();
+    //   })
+    //   .then(data => {
+    //     if (data.length > 0) {
+    //       setCarData(data);
+    //       setNoCars(false);
+    //     } else {
+    //       setNoCars(true);
+    //     }
+    //   })
+    //   .catch(err => {
+    //     console.log(err);
+    //   });
   }
 
   function selectCarHandler(keys: any) {
