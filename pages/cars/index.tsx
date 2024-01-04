@@ -20,6 +20,7 @@ import { CarFiltersType } from '../../types/UserForm';
 import IndexPage from '../Head';
 import { authOptions } from '../api/auth/[...nextauth]';
 import { InferGetServerSidePropsType } from 'next';
+import { getSession } from 'next-auth/react';
 
 export default async function Cars({
   cars,
@@ -28,7 +29,7 @@ export default async function Cars({
   const [showTableFilters, setShowTableFilters] = useState(false);
   const [carData, setCarData] = useState<Car[]>(cars);
   const [noCars, setNoCars] = useState<boolean>(cars.length === 0);
-  const session = await getServerSession();
+  const session = await getSession();
   const token = session.user.token || '';
 
   const columns = [

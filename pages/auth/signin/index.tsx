@@ -34,17 +34,6 @@ export default function Signin() {
     console.log('onSubmit Signin index file');
     console.log(data);
 
-    // fetch(`https://rent-a-car-backend-f130520aafb5.herokuapp.com/auth/login`, {
-    //   method: 'POST',
-    //   body: JSON.stringify(data),
-    //   mode: 'cors',
-    //   credentials: 'include',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //   },
-    // })
-    //   .then(res => res.json())
-    //   .then(() => {
     await signIn('credentials', {
       // TODO to be refactored
       redirect: false,
