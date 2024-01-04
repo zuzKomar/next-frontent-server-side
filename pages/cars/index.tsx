@@ -22,7 +22,7 @@ import IndexPage from '../Head';
 import { authOptions } from '../api/auth/[...nextauth]';
 import { InferGetServerSidePropsType } from 'next';
 
-export default async function Cars({
+export default function Cars({
   cars,
   session,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
