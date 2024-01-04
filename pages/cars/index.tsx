@@ -13,18 +13,20 @@ import {
 import { PageContainer } from '../../components/PageContainer';
 import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
-import { Session, unstable_getServerSession } from 'next-auth';
+import { getServerSession } from 'next-auth/next';
 import { useState } from 'react';
 import TableFilters from './components/tableFilters';
 import { Car } from '../../types/Car';
 import { CarFiltersType } from '../../types/UserForm';
 import IndexPage from '../Head';
+import { authOptions } from '../api/auth/[...nextauth]';
 
 interface IndexCarsPageProps {
   cars: Car[];
+  session: any;
 }
 
-export default async function Cars({ cars }: IndexCarsPageProps) {
+export default async function Cars({ cars, session }: IndexCarsPageProps) {
   const router = useRouter();
   const [showTableFilters, setShowTableFilters] = useState(false);
   const [carData, setCarData] = useState<any[]>([...cars]);
@@ -195,20 +197,20 @@ export default async function Cars({ cars }: IndexCarsPageProps) {
   );
 }
 
-export async function getServerSideProps({ req, res }) {
+export async function getServerSideProps(context) {
   try {
-    const session: Session = await unstable_getServerSession(req, res, {});
+    const session = await getServerSession(context.req, context.res, authOptions);
     console.log('', session);
+
+    if (!session) throw new Error('Missing authenticated user!');
     const user = session?.user;
-
-    if (!user) throw new Error('Missing authenticated user!');
-
     const token = user.token || '';
     const cars = await getCars(token);
 
     return {
       props: {
         cars: cars,
+        session,
       },
     };
   } catch (err) {
