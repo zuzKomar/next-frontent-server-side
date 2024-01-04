@@ -9,22 +9,18 @@ import {
   Button,
   Header,
 } from '@adobe/react-spectrum';
-import { GetServerSidePropsContext } from 'next';
+import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next';
 import { days } from '../cars/components/rentModal';
 import { useRouter } from 'next/router';
-import { getSession } from 'next-auth/react';
-import { Rent } from '../../types/Rent';
 import IndexPage from '../Head';
 import { getServerSession } from 'next-auth';
+import { authOptions } from '../api/auth/[...nextauth]';
 
-type RentsPageProps = {
-  rents: Rent[];
-};
-
-export default async function Rents({ rents }: RentsPageProps) {
+export default function Rents({
+  rents,
+  user,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const router = useRouter();
-  const session = await getServerSession();
-  const token = session.user.token || '';
 
   const columns = [
     { name: 'Car', uid: 'car' },
@@ -59,7 +55,7 @@ export default async function Rents({ rents }: RentsPageProps) {
       mode: 'cors',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + token,
+        Authorization: 'Bearer ' + user.token,
       },
     })
       .then(() => router.push(`/rents`))
@@ -118,22 +114,29 @@ export default async function Rents({ rents }: RentsPageProps) {
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   try {
-    const session = await getSession({ req: context.req });
-    console.log('rents', session);
-    if (!session) {
-      return {
-        redirect: {
-          destination: '/auth/signin',
-          permanent: false,
-        },
-      };
-    } else {
-      const token = session.user.token || '';
-      const rents = await getUserRents(token, session.user.email);
-      return { props: { rents: rents } };
-    }
+    const session = await getServerSession(context.req, context.res, authOptions);
+
+    if (!session) throw new Error('Missing authenticated user!');
+    const user = session?.user;
+    const token = user.token || '';
+    const email = user.email || '';
+    const rents = await getUserRents(token, email);
+    const responsee = rents ? [...rents] : [];
+
+    return {
+      props: {
+        rents: responsee,
+        user: session.user,
+      },
+    };
   } catch (err) {
     console.log(err);
+    return {
+      redirect: {
+        destination: '/auth/signin',
+        statusCode: 307,
+      },
+    };
   }
 }
 

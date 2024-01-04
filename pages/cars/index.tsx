@@ -20,19 +20,15 @@ import { CarFiltersType } from '../../types/UserForm';
 import IndexPage from '../Head';
 import { authOptions } from '../api/auth/[...nextauth]';
 import { InferGetServerSidePropsType } from 'next';
-import { getSession } from 'next-auth/react';
 
 export default function Cars({
   cars,
   user,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
-  console.log(user);
   const router = useRouter();
   const [showTableFilters, setShowTableFilters] = useState(false);
   const [carData, setCarData] = useState<Car[]>(cars);
   const [noCars, setNoCars] = useState<boolean>(cars.length === 0);
-  // const session = getSession();
-  // const token = session.user.token || '';
 
   const columns = [
     { name: 'Brand', uid: 'brand' },
@@ -88,12 +84,12 @@ export default function Cars({
     const pathname = url.pathname.slice(1) + newUrl.slice(0, -1);
     if (pathname.length > 5) {
       window.history.pushState({}, null, pathname);
-      //const token = (await data).user ? (await data).user.token : '';
-      await fetch(`${process.env.NEST_URL}${pathname}`, {
+
+      await fetch(`${process.env.NEST_URL}/${pathname}`, {
         mode: 'cors',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: 'Bearer ' + 'token',
+          Authorization: 'Bearer ' + user.token,
         },
       })
         .then(res => {
@@ -115,11 +111,11 @@ export default function Cars({
 
   async function clearFiltersHandler() {
     window.history.pushState({}, '', 'cars');
-    await fetch(`${process.env.NEST_URL}cars`, {
+    await fetch(`${process.env.NEST_URL}/cars`, {
       mode: 'cors',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + 'token',
+        Authorization: 'Bearer ' + user.token,
       },
     })
       .then(res => {
