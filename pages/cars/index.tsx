@@ -23,15 +23,14 @@ import { authOptions } from '../api/auth/[...nextauth]';
 
 interface IndexCarsPageProps {
   cars: Car[];
-  session: any;
 }
 
-export default async function Cars({ cars, session }: IndexCarsPageProps) {
+export default async function Cars({ cars }: IndexCarsPageProps) {
   console.log(cars);
-  console.log(session);
+
   const router = useRouter();
   const [showTableFilters, setShowTableFilters] = useState(false);
-  const [carData, setCarData] = useState<any[]>([...cars]);
+  const [carData, setCarData] = useState<Car[]>([...cars]);
   const [noCars, setNoCars] = useState<boolean>(cars.length === 0);
   //const { data } = useSession();
 
@@ -165,7 +164,7 @@ export default async function Cars({ cars, session }: IndexCarsPageProps) {
           />
         </View>
       )}
-      {carData.length > 0 && !noCars && (
+      {/* {carData.length > 0 && !noCars && (
         <TableView
           aria-label="Table with car available for rent"
           flex
@@ -188,7 +187,7 @@ export default async function Cars({ cars, session }: IndexCarsPageProps) {
             {(item: any) => <Row>{columnKey => <Cell>{item[columnKey]}</Cell>}</Row>}
           </TableBody>
         </TableView>
-      )}
+      )} */}
       {noCars && <Header>No cars available!</Header>}
     </PageContainer>
   );

@@ -6,9 +6,9 @@ export type Car = {
   power: number;
   capacity: number;
   costPerDay: number;
-  numberOfSeats: number;
+  numberOfSeats?: number;
   transmission: string;
-  photo: string | null;
+  photo?: string | null;
   usable: boolean;
-  rents: any[];
+  rents?: any[];
 };
