@@ -22,7 +22,11 @@ import { authOptions } from '../api/auth/[...nextauth]';
 import { InferGetServerSidePropsType } from 'next';
 import { getSession } from 'next-auth/react';
 
-export default function Cars({ cars }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+export default function Cars({
+  cars,
+  user,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) {
+  console.log(user);
   const router = useRouter();
   const [showTableFilters, setShowTableFilters] = useState(false);
   const [carData, setCarData] = useState<Car[]>(cars);
@@ -201,7 +205,7 @@ export async function getServerSideProps(context) {
     return {
       props: {
         cars: responsee,
-        session,
+        user: session.user,
       },
     };
   } catch (err) {
