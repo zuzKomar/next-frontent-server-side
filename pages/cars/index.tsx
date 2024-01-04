@@ -30,7 +30,7 @@ export default async function Cars({ cars }: IndexCarsPageProps) {
 
   const router = useRouter();
   const [showTableFilters, setShowTableFilters] = useState(false);
-  const [carData, setCarData] = useState<Car[]>([...cars]);
+  //const [carData, setCarData] = useState<Car[]>(cars);
   const [noCars, setNoCars] = useState<boolean>(cars.length === 0);
   //const { data } = useSession();
 
