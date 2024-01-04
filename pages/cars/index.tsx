@@ -24,9 +24,10 @@ import { InferGetServerSidePropsType } from 'next';
 
 export default async function Cars({
   cars,
+  session,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   console.log(cars);
-
+  console.log(session);
   const router = useRouter();
   const [showTableFilters, setShowTableFilters] = useState(false);
   //const [carData, setCarData] = useState<Car[]>(cars);
@@ -205,7 +206,7 @@ export async function getServerSideProps(context) {
     return {
       props: {
         cars: cars,
-        session,
+        session: session,
       },
     };
   } catch (err) {
