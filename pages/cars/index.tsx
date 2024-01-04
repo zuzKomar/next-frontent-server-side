@@ -30,7 +30,7 @@ export default function Cars({
   console.log(session);
   const router = useRouter();
   const [showTableFilters, setShowTableFilters] = useState(false);
-  //const [carData, setCarData] = useState<Car[]>(cars);
+  const [carData, setCarData] = useState<Car[]>(cars);
   const [noCars, setNoCars] = useState<boolean>(cars.length === 0);
   //const { data } = useSession();
 
@@ -164,7 +164,7 @@ export default function Cars({
           />
         </View>
       )}
-      {/* {carData.length > 0 && !noCars && (
+      {carData.length > 0 && !noCars && (
         <TableView
           aria-label="Table with car available for rent"
           flex
@@ -187,7 +187,7 @@ export default function Cars({
             {(item: any) => <Row>{columnKey => <Cell>{item[columnKey]}</Cell>}</Row>}
           </TableBody>
         </TableView>
-      )} */}
+      )}
       {noCars && <Header>No cars available!</Header>}
     </PageContainer>
   );
@@ -205,8 +205,8 @@ export async function getServerSideProps(context) {
 
     return {
       props: {
-        cars: cars,
-        session: session,
+        cars,
+        session,
       },
     };
   } catch (err) {
