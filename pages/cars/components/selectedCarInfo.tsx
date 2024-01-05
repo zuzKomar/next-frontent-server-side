@@ -1,7 +1,7 @@
 import { Flex, TextField, View } from '@adobe/react-spectrum';
 import React from 'react';
 import { useState } from 'react';
-import { CarPageProps } from '../[id]';
+import { CarPageProps } from '../../../types/CarPageProps';
 import { Button } from '@adobe/react-spectrum';
 import Car from '@spectrum-icons/workflow/Car';
 import { Text } from '@adobe/react-spectrum';

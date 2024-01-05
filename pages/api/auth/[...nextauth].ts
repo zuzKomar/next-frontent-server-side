@@ -88,15 +88,13 @@ export const authOptions: NextAuthOptions = {
         token.accessTokenExpiry = tokenPayload.exp;
         token.refreshToken = userTmp.refreshToken;
       }
-      console.log('token', token);
+
       const shouldRefreshToken = Date.now() > parseInt(<string>token.accessTokenExpiry) * 1000;
+
       if (shouldRefreshToken) {
-        //console.log('call po nowy accessToken');
         token = await refreshAccessToken(token);
-        //console.log('refreshAccessToken execution result: ', token);
         return token;
       } else {
-        //console.log('accessToken aktualny');
         return Promise.resolve(token);
       }
     },
@@ -107,7 +105,7 @@ export const authOptions: NextAuthOptions = {
 
       const tokenPayload = JSON.parse(atob(token.user.token.split('.')[1]));
       session.expires = new Date(tokenPayload.exp * 1000);
-      console.log('session after eventual improvements', session);
+
       return session;
     },
   },
