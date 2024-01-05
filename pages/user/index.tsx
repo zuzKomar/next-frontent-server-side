@@ -63,11 +63,10 @@ export default function UserPage({
       loginCredentialsChanged = true;
     }
 
-    fetch(`https://rent-a-car-backend-f130520aafb5.herokuapp.com/users/${formData.id}`, {
+    fetch(`${process.env.NEST_URL}/users/${formData.id}`, {
       method: 'PATCH',
       body: JSON.stringify(updateUserDto),
       mode: 'cors',
-      credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
         Authorization: 'Bearer ' + token,
