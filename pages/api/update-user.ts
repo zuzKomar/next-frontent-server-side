@@ -6,12 +6,10 @@ export default async function handler(req, res) {
     return;
   }
   console.log(req.body);
-  // not needed in NextJS v12+
-  const body = JSON.parse(req.body);
 
   fetch(`${process.env.NEST_URL}/users/1`, {
     method: 'PATCH',
-    body: JSON.stringify(body),
+    body: JSON.stringify(req.body),
     mode: 'cors',
     headers: {
       'Content-Type': 'application/json',
