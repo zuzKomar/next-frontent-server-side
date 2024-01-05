@@ -21,12 +21,12 @@ const schema = yup.object({
   confirmPassword: yup.string().oneOf([yup.ref('password'), '']),
 });
 
-export default async function UserPage({
+export default function UserPage({
   userData,
   sessionUser,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const [editMode, setEditMode] = useState(false);
-  const [formData, setFormData] = useState(userData);
+  const [formData, setFormData] = useState({ ...userData });
   const token = sessionUser.token;
   let loginCredentialsChanged = false;
 
