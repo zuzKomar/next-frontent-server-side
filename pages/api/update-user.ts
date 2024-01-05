@@ -5,7 +5,7 @@ export default async function handler(req, res) {
     res.status(405).send({ message: 'Only PATCH requests allowed' });
     return;
   }
-  console.log(req);
+  console.log(req.body);
   // not needed in NextJS v12+
   const body = JSON.parse(req.body);
 
