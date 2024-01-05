@@ -5,9 +5,7 @@ import { Session, getServerSession } from 'next-auth';
 import IndexPage from '../Head';
 import { authOptions } from '../api/auth/[...nextauth]';
 
-export default async function CarPage({
-  data,
-}: InferGetServerSidePropsType<typeof getServerSideProps>) {
+export default function CarPage({ data }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   return (
     <PageContainer>
       <IndexPage />
