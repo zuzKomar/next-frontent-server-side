@@ -38,7 +38,9 @@ export default function UserPage({
     resolver: yupResolver(schema),
   });
 
-  const onSubmit: SubmitHandler<IFormInputs> = async data => {
+  const onSubmit: SubmitHandler<IFormInputs> = async (data, e) => {
+    e.preventDefault();
+
     const updateUserDto = {};
 
     if (data.firstName.length > 0) {
