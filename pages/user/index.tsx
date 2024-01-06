@@ -78,9 +78,9 @@ export default function UserPage({
       .then(res => {
         setEditMode(false);
         setFormData(res);
-        if (loginCredentialsChanged) {
-          signOut();
-        }
+        // if (loginCredentialsChanged) {
+        //   signOut();
+        // }
       })
       .catch(e => {
         console.log(e);
