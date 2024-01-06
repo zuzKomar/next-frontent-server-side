@@ -11,7 +11,7 @@ export default async function handler(req, res) {
   }
   console.log(req.body);
 
-  fetch(`${process.env.NEST_URL}/users/1`, {
+  fetch(`${process.env.NEST_URL}/users/${token.user.id}`, {
     method: 'PATCH',
     body: JSON.stringify(req.body),
     mode: 'cors',
@@ -22,6 +22,6 @@ export default async function handler(req, res) {
   });
 
   const data = await res.json();
-
+  console.log(data);
   return NextResponse.json(data);
 }
