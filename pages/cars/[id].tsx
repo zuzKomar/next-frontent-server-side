@@ -1,7 +1,7 @@
 import { PageContainer } from '../../components/PageContainer';
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next';
 import SelectedCarInfo from './components/selectedCarInfo';
-import { Session, getServerSession } from 'next-auth';
+import { getServerSession } from 'next-auth';
 import IndexPage from '../Head';
 import { authOptions } from '../api/auth/[...nextauth]';
 
