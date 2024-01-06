@@ -24,9 +24,7 @@ export default async function handler(req, res) {
     .then(res => {
       console.log('--------dupa--------');
       console.log(res);
+      console.log('--------dupa2--------');
+      return res;
     });
-
-  const data = await res.json();
-
-  return NextResponse.json(data);
 }
