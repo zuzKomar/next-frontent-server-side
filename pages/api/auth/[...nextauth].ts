@@ -105,7 +105,7 @@ export const authOptions: NextAuthOptions = {
 
       const tokenPayload = JSON.parse(atob(token.user.token.split('.')[1]));
       session.expires = new Date(tokenPayload.exp * 1000);
-
+      console.log(session);
       return session;
     },
   },
