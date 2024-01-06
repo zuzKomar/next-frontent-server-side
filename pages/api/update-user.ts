@@ -1,9 +1,11 @@
 import { NextResponse } from 'next/server';
 import { getToken } from 'next-auth/jwt';
+import { NextApiRequest, NextApiResponse } from 'next';
 
 //TODO figure out how to pass real token of authenticated user
-export default async function handler(req, res) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const token = await getToken({ req });
+  let tmpRespObject = {};
   if (req.method !== 'PATCH') {
     res.status(405).send({ message: 'Only PATCH requests allowed' });
     return;
@@ -24,11 +26,10 @@ export default async function handler(req, res) {
     .then(res => {
       console.log('--------dupa--------');
       console.log(res);
+      tmpRespObject = { ...tmpRespObject };
       console.log('--------dupa2--------');
-      return res;
+      //return res;
     });
 
-  const data = await res.json();
-
-  return new NextResponse(data);
+  return NextResponse.json(tmpRespObject);
 }

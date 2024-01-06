@@ -75,9 +75,17 @@ export default function UserPage({
       },
     })
       // .then(res => res.json())
-      .then(res => {
+      .then((res: any) => {
+        console.log(res);
         setEditMode(false);
-        setFormData(res);
+        setFormData({
+          id: res.body.id,
+          firstName: res.firstName,
+          lastName: res.lastName,
+          phone: res.phone,
+          email: res.email,
+          refreshToken: res.refreshToken,
+        });
         // if (loginCredentialsChanged) {
         //   signOut();
         // }
@@ -222,6 +230,7 @@ export async function getServerSideProps(context) {
     const token = user.token || '';
     const email = user.email || '';
     const userData = await getUser(token, email);
+    console.log(userData);
 
     return {
       props: {
