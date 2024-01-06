@@ -1,4 +1,3 @@
-import { NextResponse } from 'next/server';
 import { getToken } from 'next-auth/jwt';
 import { NextApiRequest, NextApiResponse } from 'next';
 
@@ -26,10 +25,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     .then(res => {
       console.log('--------dupa--------');
       console.log(res);
-      tmpRespObject = { ...tmpRespObject };
+      tmpRespObject = { ...res };
       console.log('--------dupa2--------');
-      //return res;
+      return res;
     });
 
-  return NextResponse.json(tmpRespObject);
+  return res.json({ body: { ...tmpRespObject } });
 }
