@@ -29,7 +29,15 @@ export const Navbar = () => {
         </Tabs>
         <>
           {session ? (
-            <button onClick={() => router.push('/api/auth/logout')}>Sign out</button>
+            <button
+              onClick={() => {
+                signOut({ redirect: false }).then(() => {
+                  router.push('/');
+                });
+              }}
+            >
+              Sign out
+            </button>
           ) : (
             //<Link href="/api/auth/logout">{'Sign out'}</Link>
             <button

@@ -86,9 +86,9 @@ export default function UserPage({
           email: data.body.email,
           refreshToken: data.body.refreshToken,
         });
-        // if (loginCredentialsChanged) {
-        //   signOut();
-        // }
+        if (loginCredentialsChanged) {
+          signOut({ callbackUrl: process.env.NEXTAUTH_URL });
+        }
       })
       .catch(e => {
         console.log(e);
