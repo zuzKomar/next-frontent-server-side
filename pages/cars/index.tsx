@@ -85,12 +85,13 @@ export default function Cars({
     if (pathname.length > 5) {
       window.history.pushState({}, null, pathname);
 
-      await fetch(`${process.env.NEST_URL}/${pathname}`, {
+      await fetch(`/api/filter-cars`, {
         mode: 'cors',
         headers: {
           'Content-Type': 'application/json',
           Authorization: 'Bearer ' + user.token,
         },
+        body: pathname,
       })
         .then(res => {
           return res.json();
