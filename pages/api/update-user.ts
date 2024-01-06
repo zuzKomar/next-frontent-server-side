@@ -1,6 +1,10 @@
 import { NextResponse } from 'next/server';
+import { getToken } from 'next-auth/jwt';
 
+//TODO figure out how to pass real token of authenticated user
 export default async function handler(req, res) {
+  const token = await getToken({ req });
+
   if (req.method !== 'PATCH') {
     res.status(405).send({ message: 'Only PATCH requests allowed' });
     return;
