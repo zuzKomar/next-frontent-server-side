@@ -8,12 +8,12 @@ export default async function handler(req, res) {
     res.status(405).send({ message: 'Only PATCH requests allowed' });
     return;
   }
-  console.log('req body: ', req.body);
+  console.log('stringified req body: ', JSON.stringify(req.body));
 
   fetch(`${process.env.NEST_URL}/users/${token.user.id}`, {
     method: 'PATCH',
     body: JSON.stringify(req.body),
-    //mode: 'cors',
+    mode: 'cors',
     headers: {
       'Content-Type': 'application/json',
       'Access-Control-Allow-Origin': '*',
@@ -22,7 +22,7 @@ export default async function handler(req, res) {
   })
     .then(res => res.json())
     .then(res => {
-      console.log(JSON.stringify(res));
+      console.log(res);
     });
 
   const data = await res.json();
