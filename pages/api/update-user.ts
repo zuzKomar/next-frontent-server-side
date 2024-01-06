@@ -27,4 +27,8 @@ export default async function handler(req, res) {
       console.log('--------dupa2--------');
       return res;
     });
+
+  const data = await res.json();
+
+  return new NextResponse(data);
 }
