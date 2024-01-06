@@ -1,7 +1,6 @@
 import { getToken } from 'next-auth/jwt';
 import { NextApiRequest, NextApiResponse } from 'next';
 
-//TODO figure out how to pass real token of authenticated user
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const token = await getToken({ req });
   let tmpRespObject = {};
@@ -9,7 +8,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     res.status(405).send({ message: 'Only PATCH requests allowed' });
     return;
   }
-  console.log('stringified req body: ', JSON.stringify(req.body));
 
   await fetch(`https://rent-a-car-backend-f130520aafb5.herokuapp.com/users/${token.user.id}`, {
     method: 'PATCH',
@@ -23,10 +21,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   })
     .then(res => res.json())
     .then(data => {
-      console.log('--------dupa--------');
-      console.log(data);
       tmpRespObject = { ...data };
-      console.log('--------dupa2--------');
       return data;
     });
 

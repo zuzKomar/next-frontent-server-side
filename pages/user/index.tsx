@@ -79,12 +79,12 @@ export default function UserPage({
         console.log(data);
         setEditMode(false);
         setFormData({
-          id: data.id,
-          firstName: data.firstName,
-          lastName: data.lastName,
-          phone: data.phone,
-          email: data.email,
-          refreshToken: data.refreshToken,
+          id: data.body.id,
+          firstName: data.body.firstName,
+          lastName: data.body.lastName,
+          phone: data.body.phone,
+          email: data.body.email,
+          refreshToken: data.body.refreshToken,
         });
         // if (loginCredentialsChanged) {
         //   signOut();
