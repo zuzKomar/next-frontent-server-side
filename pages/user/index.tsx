@@ -74,17 +74,17 @@ export default function UserPage({
         Authorization: 'Bearer ' + token,
       },
     })
-      // .then(res => res.json())
-      .then((res: any) => {
-        console.log(res);
+      .then(res => res.json())
+      .then(data => {
+        console.log(data);
         setEditMode(false);
         setFormData({
-          id: res.body.id,
-          firstName: res.firstName,
-          lastName: res.lastName,
-          phone: res.phone,
-          email: res.email,
-          refreshToken: res.refreshToken,
+          id: data.id,
+          firstName: data.firstName,
+          lastName: data.lastName,
+          phone: data.phone,
+          email: data.email,
+          refreshToken: data.refreshToken,
         });
         // if (loginCredentialsChanged) {
         //   signOut();

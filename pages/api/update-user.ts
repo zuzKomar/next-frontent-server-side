@@ -30,5 +30,5 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return data;
     });
 
-  return res.json({ body: { ...tmpRespObject } });
+  return res.send({ status: 200, message: 'Hello from Next.js proxy', body: { ...tmpRespObject } });
 }
