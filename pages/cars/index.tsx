@@ -83,9 +83,10 @@ export default function Cars({
     const url = new URL(window.location.href);
     const pathname = url.pathname.slice(1) + newUrl.slice(0, -1);
     if (pathname.length > 5) {
-      window.history.pushState({}, null, pathname);
+      //window.history.pushState({}, null, pathname);
 
-      await fetch(`/api/filter-cars`, {
+      fetch(`/api/filter-cars`, {
+        method: 'GET',
         mode: 'cors',
         headers: {
           'Content-Type': 'application/json',

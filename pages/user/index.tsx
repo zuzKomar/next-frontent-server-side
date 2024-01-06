@@ -76,7 +76,6 @@ export default function UserPage({
     })
       .then(res => res.json())
       .then(data => {
-        console.log(data);
         setEditMode(false);
         setFormData({
           id: data.body.id,
