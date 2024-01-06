@@ -75,10 +75,11 @@ export default function Rents({
           selectionStyle="highlight"
           alignSelf="center"
           width="100%"
+          UNSAFE_className="cars-tablee"
         >
           <TableHeader columns={columns}>
             {column => (
-              <Column key={column.uid} align="center" width="100%">
+              <Column key={column.uid} align="center">
                 {column.name}
               </Column>
             )}
