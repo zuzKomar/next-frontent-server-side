@@ -10,18 +10,19 @@ export default async function handler(req, res) {
   }
   console.log('stringified req body: ', JSON.stringify(req.body));
 
-  fetch(`${process.env.NEST_URL}/users/${token.user.id}`, {
+  await fetch(`https://rent-a-car-backend-f130520aafb5.herokuapp.com/users/${token.user.id}`, {
     method: 'PATCH',
-    body: JSON.stringify(req.body),
     mode: 'cors',
     headers: {
       'Content-Type': 'application/json',
       'Access-Control-Allow-Origin': '*',
-      Authorization: 'Bearer ' + token.accessToken,
+      Authorization: `Bearer ${token.accessToken}`,
     },
+    body: JSON.stringify(req.body),
   })
     .then(res => res.json())
     .then(res => {
+      console.log('--------dupa--------');
       console.log(res);
     });
 
