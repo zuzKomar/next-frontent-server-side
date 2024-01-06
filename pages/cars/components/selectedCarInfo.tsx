@@ -45,7 +45,7 @@ const SelectedCarInfo = ({ data }: CarPageProps) => {
         'T08:00:00.000Z',
     };
 
-    fetch(`${process.env.NEST_URL}rents`, {
+    fetch(`/api/rent-a-car`, {
       method: 'POST',
       body: JSON.stringify(createRentDto),
       mode: 'cors',
