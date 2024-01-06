@@ -14,9 +14,10 @@ export default async function handler(req, res) {
   fetch(`${process.env.NEST_URL}/users/${token.user.id}`, {
     method: 'PATCH',
     body: JSON.stringify(req.body),
-    mode: 'cors',
+    //mode: 'cors',
     headers: {
       'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*',
       Authorization: 'Bearer ' + token.accessToken,
     },
   });
