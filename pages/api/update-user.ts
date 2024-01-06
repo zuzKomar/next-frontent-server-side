@@ -22,12 +22,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     body: JSON.stringify(req.body),
   })
     .then(res => res.json())
-    .then(res => {
+    .then(data => {
       console.log('--------dupa--------');
-      console.log(res);
-      tmpRespObject = { ...res };
+      console.log(data);
+      tmpRespObject = { ...data };
       console.log('--------dupa2--------');
-      return res;
+      return data;
     });
 
   return res.json({ body: { ...tmpRespObject } });
