@@ -74,7 +74,7 @@ export default function UserPage({
         Authorization: 'Bearer ' + token,
       },
     })
-      .then(res => res.json())
+      // .then(res => res.json())
       .then(res => {
         setEditMode(false);
         setFormData(res);
