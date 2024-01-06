@@ -90,7 +90,7 @@ export const authOptions: NextAuthOptions = {
       }
 
       const shouldRefreshToken = Date.now() > parseInt(<string>token.accessTokenExpiry) * 1000;
-      console.log(token);
+
       if (shouldRefreshToken) {
         token = await refreshAccessToken(token);
         return token;
