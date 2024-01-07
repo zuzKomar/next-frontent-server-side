@@ -8,8 +8,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     res.status(405).send({ message: 'Only POST requests allowed' });
     return;
   }
-  console.log('received body: ', req.body);
-  //${process.env.NEST_URL}/${pathname}
+
   await fetch(`https://rent-a-car-backend-f130520aafb5.herokuapp.com/${req.body.pathname}`, {
     method: 'GET',
     mode: 'cors',
@@ -21,7 +20,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   })
     .then(res => res.json())
     .then(data => {
-      console.log(data);
       tmpRespObject = [...data];
       return data;
     });
@@ -29,6 +27,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   return res.send({
     status: 200,
     message: 'Hello from Next.js proxy',
-    body: tmpRespObject,
+    body: { tmpRespObject },
   });
 }

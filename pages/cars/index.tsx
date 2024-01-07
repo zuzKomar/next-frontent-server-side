@@ -125,8 +125,8 @@ export default function Cars({
         return res.json();
       })
       .then(data => {
-        if (data.length > 0) {
-          setCarData(data);
+        if (data.body.length > 0) {
+          setCarData([...data.body]);
           setNoCars(false);
         } else {
           setNoCars(true);
