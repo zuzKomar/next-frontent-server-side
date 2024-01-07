@@ -10,7 +10,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
   console.log(req.body);
   //${process.env.NEST_URL}/${pathname}
-  await fetch(`https://rent-a-car-backend-f130520aafb5.herokuapp.com/cars`, {
+  await fetch(`https://rent-a-car-backend-f130520aafb5.herokuapp.com/${req.body}`, {
     method: 'GET',
     mode: 'cors',
     headers: {
@@ -18,7 +18,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       'Access-Control-Allow-Origin': '*',
       Authorization: `Bearer ${token.accessToken}`,
     },
-    body: JSON.stringify(req.body),
   })
     .then(res => res.json())
     .then(data => {
