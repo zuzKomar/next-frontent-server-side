@@ -8,9 +8,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     res.status(405).send({ message: 'Only POST requests allowed' });
     return;
   }
-  console.log(req.body);
+  console.log('received body: ', req.body);
   //${process.env.NEST_URL}/${pathname}
-  await fetch(`https://rent-a-car-backend-f130520aafb5.herokuapp.com/${req.body}`, {
+  await fetch(`https://rent-a-car-backend-f130520aafb5.herokuapp.com/${req.body.pathname}`, {
     method: 'GET',
     mode: 'cors',
     headers: {
