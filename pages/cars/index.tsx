@@ -99,7 +99,7 @@ export default function Cars({
         })
         .then(data => {
           if (data.length > 0) {
-            setCarData(data);
+            setCarData([...data]);
             setNoCars(false);
           } else {
             setNoCars(true);

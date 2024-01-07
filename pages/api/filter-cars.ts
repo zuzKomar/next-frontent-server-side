@@ -21,9 +21,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   })
     .then(res => res.json())
     .then(data => {
+      console.log(data);
       tmpRespObject = [...data];
       return data;
     });
 
-  return res.send({ status: 200, message: 'Hello from Next.js proxy', body: { ...tmpRespObject } });
+  return res.send({
+    status: 200,
+    message: 'Hello from Next.js proxy',
+    body: { data: [tmpRespObject] },
+  });
 }
