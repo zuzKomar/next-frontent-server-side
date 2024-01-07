@@ -92,7 +92,7 @@ export default function Cars({
           'Content-Type': 'application/json',
           Authorization: 'Bearer ' + user.token,
         },
-        body: pathname,
+        body: JSON.stringify({ pathname: pathname }),
       })
         .then(res => {
           return res.json();
