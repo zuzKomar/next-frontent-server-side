@@ -98,9 +98,9 @@ export default function Cars({
           return res.json();
         })
         .then(data => {
-          console.log(data);
-          if (data.length > 0) {
-            setCarData([...data]);
+          console.log(data.body);
+          if (data.body.length > 0) {
+            setCarData([...data.body]);
             setNoCars(false);
           } else {
             setNoCars(true);
