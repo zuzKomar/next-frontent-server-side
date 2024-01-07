@@ -110,7 +110,6 @@ export default function Cars({
   }
 
   async function clearFiltersHandler() {
-    window.history.pushState({}, '', 'cars');
     await fetch(`/api/fetch-all-cars`, {
       mode: 'cors',
       headers: {
