@@ -86,7 +86,7 @@ export default function Cars({
       //window.history.pushState({}, null, pathname);
 
       fetch(`/api/filter-cars`, {
-        method: 'GET',
+        method: 'POST',
         mode: 'cors',
         headers: {
           'Content-Type': 'application/json',

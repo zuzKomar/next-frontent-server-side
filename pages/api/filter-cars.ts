@@ -4,8 +4,8 @@ import { NextApiRequest, NextApiResponse } from 'next';
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const token = await getToken({ req });
   let tmpRespObject = [];
-  if (req.method !== 'GET') {
-    res.status(405).send({ message: 'Only GET requests allowed' });
+  if (req.method !== 'POST') {
+    res.status(405).send({ message: 'Only POST requests allowed' });
     return;
   }
   console.log(req.body);
