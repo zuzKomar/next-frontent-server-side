@@ -46,6 +46,7 @@ export default function Rents({
 
   function handleDamageReport(rentId: number) {
     const updateRentDto = {
+      rentId: rentId,
       damagedCar: true,
     };
 
