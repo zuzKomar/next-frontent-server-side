@@ -83,8 +83,6 @@ export default function Cars({
     const url = new URL(window.location.href);
     const pathname = url.pathname.slice(1) + newUrl.slice(0, -1);
     if (pathname.length > 5) {
-      //window.history.pushState({}, null, pathname);
-
       fetch(`/api/filter-cars`, {
         method: 'POST',
         mode: 'cors',
@@ -98,7 +96,6 @@ export default function Cars({
           return res.json();
         })
         .then(data => {
-          console.log(data.body.length);
           if (data.body.length > 0) {
             setCarData([...data.body]);
             setNoCars(false);
@@ -125,7 +122,6 @@ export default function Cars({
         return res.json();
       })
       .then(data => {
-        console.log(data.body.length);
         if (data.body.length > 0) {
           setCarData([...data.body]);
           setNoCars(false);
