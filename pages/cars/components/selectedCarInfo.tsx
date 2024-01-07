@@ -135,7 +135,7 @@ const SelectedCarInfo = ({ data }: CarPageProps) => {
           />
         </Flex>
         <Flex direction="column" marginTop="20px">
-          <Image src={photoPath} alt="car photo" width="240" />
+          <Image src={photoPath} alt="car photo" style={{ width: '200px', height: '100px' }} />
           <DialogTrigger type="modal">
             <Button variant="primary" marginTop="20px" onPress={() => setOpen(true)}>
               <Car />
