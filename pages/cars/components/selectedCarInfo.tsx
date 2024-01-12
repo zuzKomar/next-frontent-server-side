@@ -13,7 +13,7 @@ import Image from 'next/image';
 const SelectedCarInfo = ({ data }: CarPageProps) => {
   const [open, setOpen] = useState(false);
 
-  const photoPath = `../../../public/static/${data ? data.photo : ''}.png`;
+  const photoPath = `/static/${data ? data.photo : ''}.png`;
   console.log(photoPath);
   const session = useSession();
   const userId = session.data ? session.data.user.id : '';
