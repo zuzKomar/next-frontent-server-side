@@ -195,11 +195,11 @@ export async function getServerSideProps(context) {
     const user = session?.user;
     const token = user.token || '';
     const cars = await getCars(token);
-    const responsee = cars ? [...cars] : [];
+    const response = cars ? [...cars] : [];
 
     return {
       props: {
-        cars: responsee,
+        cars: response,
         user: session.user,
       },
     };

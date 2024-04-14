@@ -14,7 +14,6 @@ const SelectedCarInfo = ({ data }: CarPageProps) => {
   const [open, setOpen] = useState(false);
 
   const photoPath = `/static/${data ? data.photo : ''}.png`;
-  console.log(photoPath);
   const session = useSession();
   const userId = session.data ? session.data.user.id : '';
   const token = session.data ? session.data.user.token : '';
