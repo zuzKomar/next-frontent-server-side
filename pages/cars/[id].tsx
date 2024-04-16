@@ -43,6 +43,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 export async function getCar(carId: string, token: string) {
   const response = await fetch(`${process.env.NEST_URL}/cars/${carId}`, {
     mode: 'cors',
+    cache: 'no-store',
     headers: {
       'Content-Type': 'application/json',
       Authorization: 'Bearer ' + token,

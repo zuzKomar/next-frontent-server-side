@@ -69,6 +69,7 @@ export default function UserPage({
       method: 'PATCH',
       body: JSON.stringify(updateUserDto),
       mode: 'cors',
+      cache: 'no-store',
       headers: {
         'Content-Type': 'application/json',
         Authorization: 'Bearer ' + token,
@@ -251,6 +252,7 @@ export async function getServerSideProps(context) {
 export async function getUser(token: string, email: string) {
   const response = await fetch(`${process.env.NEST_URL}/users/${email}`, {
     mode: 'cors',
+    cache: 'no-store',
     headers: {
       'Content-Type': 'application/json',
       Authorization: 'Bearer ' + token,

@@ -86,6 +86,7 @@ export default function Cars({
       fetch(`/api/filter-cars`, {
         method: 'POST',
         mode: 'cors',
+        cache: 'no-store',
         headers: {
           'Content-Type': 'application/json',
           Authorization: 'Bearer ' + user.token,
@@ -112,6 +113,7 @@ export default function Cars({
   async function clearFiltersHandler() {
     await fetch(`/api/fetch-all-cars`, {
       mode: 'cors',
+      cache: 'no-store',
       headers: {
         'Content-Type': 'application/json',
         Authorization: 'Bearer ' + user.token,
@@ -217,6 +219,7 @@ export async function getServerSideProps(context) {
 export async function getCars(token: string) {
   const response = await fetch(`${process.env.NEST_URL}/cars`, {
     mode: 'cors',
+    cache: 'no-store',
     headers: {
       'Content-Type': 'application/json',
       Authorization: 'Bearer ' + token,

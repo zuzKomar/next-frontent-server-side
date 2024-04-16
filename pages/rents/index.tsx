@@ -54,6 +54,7 @@ export default function Rents({
       method: 'PATCH',
       body: JSON.stringify(updateRentDto),
       mode: 'cors',
+      cache: 'no-store',
       headers: {
         'Content-Type': 'application/json',
         Authorization: 'Bearer ' + user.token,
@@ -145,6 +146,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 export async function getUserRents(token: string, email: string) {
   const response = await fetch(`${process.env.NEST_URL}/users/${email}`, {
     mode: 'cors',
+    cache: 'no-store',
     headers: {
       'Content-Type': 'application/json',
       Authorization: 'Bearer ' + token,
