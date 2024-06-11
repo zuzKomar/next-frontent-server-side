@@ -8,48 +8,52 @@ export const Navbar = () => {
   const currentPath = router.pathname.split('/')[1];
   const { data: session } = useSession();
   return (
-    <Flex justifyContent="center" direction="column">
-      {session && <h2>{`Logged as ${session?.user.firstName + ' ' + session?.user.lastName}`}</h2>}
-      <Flex direction="row" justifyContent="center">
-        <Tabs aria-label="navigation" density="compact" selectedKey={currentPath}>
-          <TabList>
-            <Item key="">
-              <Link href="/">Home</Link>
-            </Item>
-            <Item key="cars">
-              <Link href="/cars">Cars</Link>
-            </Item>
-            <Item key="rents">
-              <Link href="/rents">Rents</Link>
-            </Item>
-            <Item key="user">
-              <Link href="/user">User</Link>
-            </Item>
-          </TabList>
-        </Tabs>
-        <>
-          {session ? (
-            <button
-              onClick={() => {
-                signOut({ redirect: false }).then(() => {
-                  router.push('/');
-                });
-              }}
-            >
-              Sign out
-            </button>
-          ) : (
-            //<Link href="/api/auth/logout">{'Sign out'}</Link>
-            <button
-              onClick={() => {
-                router.push('/auth/signin');
-              }}
-            >
-              Sign in
-            </button>
-          )}
-        </>
+    <nav>
+      <Flex justifyContent="center" direction="column">
+        {session && (
+          <h2>{`Logged as ${session?.user.firstName + ' ' + session?.user.lastName}`}</h2>
+        )}
+        <Flex direction="row" justifyContent="center">
+          <Tabs aria-label="navigation" density="compact" selectedKey={currentPath}>
+            <TabList>
+              <Item key="">
+                <Link href="/">Home</Link>
+              </Item>
+              <Item key="cars">
+                <Link href="/cars">Cars</Link>
+              </Item>
+              <Item key="rents">
+                <Link href="/rents">Rents</Link>
+              </Item>
+              <Item key="user">
+                <Link href="/user">User</Link>
+              </Item>
+            </TabList>
+          </Tabs>
+          <>
+            {session ? (
+              <button
+                onClick={() => {
+                  signOut({ redirect: false }).then(() => {
+                    router.push('/');
+                  });
+                }}
+              >
+                Sign out
+              </button>
+            ) : (
+              //<Link href="/api/auth/logout">{'Sign out'}</Link>
+              <button
+                onClick={() => {
+                  router.push('/auth/signin');
+                }}
+              >
+                Sign in
+              </button>
+            )}
+          </>
+        </Flex>
       </Flex>
-    </Flex>
+    </nav>
   );
 };

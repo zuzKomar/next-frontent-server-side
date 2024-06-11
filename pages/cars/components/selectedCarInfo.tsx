@@ -19,8 +19,6 @@ const SelectedCarInfo = ({ data }: CarPageProps) => {
   const token = session.data ? session.data.user.token : '';
 
   function handleCarRental(carId: number, userId: number, date: any, dueDate: any) {
-    //check if this car is available this time
-    //fetch post -> create new rent
     const createRentDto = {
       userId,
       carId,

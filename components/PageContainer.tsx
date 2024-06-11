@@ -7,7 +7,7 @@ export const PageContainer = ({ children }: any): JSX.Element => {
   return (
     <Flex direction="column" width="100%" height="100%" justifyContent="center" alignItems="center">
       <Header />
-      <div className={style.experiment}>
+      <main className={style.experiment}>
         <View
           paddingBottom="40px"
           minHeight="85vh"
@@ -18,7 +18,7 @@ export const PageContainer = ({ children }: any): JSX.Element => {
             {children}
           </Flex>
         </View>
-      </div>
+      </main>
       <Footer />
     </Flex>
   );
